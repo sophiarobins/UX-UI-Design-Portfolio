@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chasing Robins Media — Website Design Case Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --forest:       #2C4A3E;
+    --forest-deep:  #1a2e27;
+    --forest-mid:   #3d6357;
+    --cream:        #F5F0E8;
+    --cream-warm:   #EDE7D7;
+    --cream-dark:   #E4DDD0;
+    --gold:         #C9A84C;
+    --gold-light:   #E2C27A;
+    --gold-pale:    #F0DFA8;
+    --charcoal:     #2A2A2A;
+    --muted:        #7A7A72;
+    --border:       rgba(201,168,76,0.22);
+    --border-dark:  rgba(201,168,76,0.12);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--charcoal);
+    overflow-x: hidden;
+  }
+
+  /* ── PROGRESS BAR ── */
+  #prog {
+    position: fixed; top: 0; left: 0;
+    height: 2px; width: 0%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    z-index: 1000;
+    transition: width 0.08s linear;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 200;
+    padding: 18px 52px;
+    display: flex; justify-content: space-between; align-items: center;
+    backdrop-filter: blur(14px);
+    background: rgba(245,240,232,0.9);
+    border-bottom: 1px solid var(--border-dark);
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem; font-weight: 500;
+    letter-spacing: 0.1em; color: var(--forest);
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a {
+    font-size: 0.68rem; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--muted);
+    text-decoration: none; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--forest); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    background: var(--forest-deep);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: end;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-glow {
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 60% 70% at 80% 20%, rgba(201,168,76,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 50% at 5% 90%, rgba(61,99,87,0.5) 0%, transparent 55%);
+  }
+
+  .hero-grain {
+    position: absolute; inset: 0; pointer-events: none; opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    background-size: 200px;
+  }
+
+  .hero-left {
+    padding: 160px 52px 80px;
+    position: relative;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.65rem; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--gold);
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 28px;
+    opacity: 0; animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+  .hero-eyebrow::before {
+    content: ''; display: block;
+    width: 36px; height: 1px;
+    background: var(--gold); opacity: 0.6;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 5.5vw, 6.2rem);
+    font-weight: 300; line-height: 0.97;
+    color: var(--cream);
+    opacity: 0; animation: fadeUp 0.9s ease 0.35s forwards;
+  }
+  .hero-title em { font-style: italic; color: var(--gold-light); }
+
+  .hero-sub {
+    margin-top: 32px;
+    font-size: 1rem; line-height: 1.75;
+    color: rgba(245,240,232,0.6);
+    max-width: 420px;
+    opacity: 0; animation: fadeUp 0.9s ease 0.55s forwards;
+  }
+
+  .hero-cta-row {
+    display: flex; align-items: center; gap: 28px;
+    margin-top: 48px;
+    opacity: 0; animation: fadeUp 0.9s ease 0.72s forwards;
+  }
+
+  .btn-primary {
+    display: inline-block;
+    padding: 14px 32px;
+    background: var(--gold);
+    color: var(--forest-deep);
+    font-size: 0.72rem; letter-spacing: 0.16em;
+    text-transform: uppercase; font-weight: 500;
+    text-decoration: none; border: none; cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+  .btn-ghost {
+    font-size: 0.72rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: rgba(245,240,232,0.5);
+    text-decoration: none; display: flex; align-items: center; gap: 8px;
+    transition: color 0.2s;
+  }
+  .btn-ghost:hover { color: var(--gold-light); }
+  .btn-ghost::after { content: '↓'; }
+
+  .hero-right {
+    position: relative;
+    align-self: stretch;
+    display: flex; align-items: flex-end;
+    padding-bottom: 80px;
+    opacity: 0; animation: fadeRight 1s ease 0.6s forwards;
+  }
+
+  /* Simulated browser mockup */
+  .browser-mock {
+    width: 100%;
+    max-width: 560px;
+    border-radius: 6px 6px 0 0;
+    overflow: hidden;
+    box-shadow: 0 40px 120px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05);
+    transform: perspective(1000px) rotateY(-4deg) rotateX(2deg);
+    transition: transform 0.5s ease;
+  }
+  .browser-mock:hover {
+    transform: perspective(1000px) rotateY(-1deg) rotateX(0deg);
+  }
+
+  .browser-bar {
+    background: #1e1e1e;
+    padding: 10px 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .browser-dots { display: flex; gap: 6px; }
+  .browser-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+
+  .browser-url {
+    flex: 1; background: #2d2d2d; border-radius: 3px;
+    padding: 4px 12px; font-size: 0.68rem;
+    color: rgba(255,255,255,0.35); font-family: monospace;
+  }
+
+  .browser-screen {
+    background: var(--forest-deep);
+    aspect-ratio: 16/10;
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+
+  /* Mini website preview inside browser */
+  .mini-nav {
+    padding: 12px 20px;
+    display: flex; justify-content: space-between; align-items: center;
+    background: rgba(26,46,39,0.95);
+    border-bottom: 1px solid rgba(201,168,76,0.1);
+    flex-shrink: 0;
+  }
+  .mini-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.7rem; color: var(--cream);
+    letter-spacing: 0.1em;
+  }
+  .mini-nav-links { display: flex; gap: 12px; }
+  .mini-nav-links span {
+    font-size: 0.45rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: rgba(245,240,232,0.4);
+  }
+
+  .mini-hero {
+    flex: 1; position: relative;
+    display: flex; align-items: center;
+    padding: 0 24px;
+    background: linear-gradient(135deg, var(--forest-deep) 0%, var(--forest) 100%);
+    overflow: hidden;
+  }
+
+  .mini-hero-img {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(to right, rgba(26,46,39,0.85) 40%, rgba(26,46,39,0.3) 100%),
+      linear-gradient(160deg, #2C4A3E 0%, #1a2e27 50%, #3d6357 100%);
+  }
+
+  /* Photo placeholder pattern */
+  .mini-hero-img::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      rgba(201,168,76,0.03) 0px, rgba(201,168,76,0.03) 1px,
+      transparent 1px, transparent 20px
+    );
+  }
+
+  .mini-hero-text { position: relative; z-index: 1; }
+  .mini-hero-text h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem; font-weight: 300;
+    color: var(--cream); line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  .mini-hero-text h2 em { font-style: italic; color: var(--gold-light); }
+  .mini-hero-text p {
+    font-size: 0.45rem; color: rgba(245,240,232,0.5);
+    letter-spacing: 0.06em; max-width: none;
+  }
+  .mini-btn {
+    display: inline-block; margin-top: 10px;
+    padding: 5px 12px; background: var(--gold);
+    font-size: 0.4rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--forest-deep);
+  }
+
+  .mini-gallery-strip {
+    display: flex; gap: 2px; flex-shrink: 0;
+  }
+  .mini-gallery-strip .mini-img {
+    flex: 1; height: 44px;
+    background: var(--forest-mid);
+    position: relative; overflow: hidden;
+  }
+  .mini-img:nth-child(1) { background: #3d5a4e; }
+  .mini-img:nth-child(2) { background: #2e4840; }
+  .mini-img:nth-child(3) { background: #4a6b5c; }
+  .mini-img:nth-child(4) { background: #334f44; }
+  .mini-img:nth-child(5) { background: #3a5a4a; }
+  .mini-img::after {
+    content: '✦';
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.5rem; color: rgba(201,168,76,0.3);
+  }
+
+  .hero-meta-strip {
+    padding: 28px 52px;
+    display: flex; gap: 48px; flex-wrap: wrap;
+    background: rgba(26,46,39,0.6);
+    border-top: 1px solid rgba(201,168,76,0.1);
+    position: relative;
+    opacity: 0; animation: fadeUp 0.9s ease 0.9s forwards;
+  }
+  .hero-meta-strip { grid-column: 1 / -1; }
+
+  .hm-item label {
+    display: block; font-size: 0.6rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 5px; opacity: 0.7;
+  }
+  .hm-item span {
+    font-size: 0.8rem; color: rgba(245,240,232,0.65);
+  }
+
+  /* ── SHARED LAYOUT ── */
+  .container { max-width: 1200px; margin: 0 auto; }
+
+  .section { padding: 110px 52px; }
+  .section-dark { background: var(--forest-deep); }
+  .section-warm { background: var(--cream-warm); }
+  .section-mid  { background: var(--forest); }
+
+  .section-label {
+    font-size: 0.62rem; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--gold);
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 20px;
+  }
+  .section-label::before {
+    content: ''; display: block;
+    width: 28px; height: 1px;
+    background: var(--gold); opacity: 0.7;
+  }
+
+  h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 3.8vw, 3.6rem);
+    font-weight: 400; line-height: 1.1;
+    color: var(--forest-deep); margin-bottom: 28px;
+  }
+  h2 em { font-style: italic; color: var(--forest-mid); }
+  h2.light { color: var(--cream); }
+  h2.light em { color: var(--gold-light); }
+
+  p.body {
+    font-size: 0.98rem; line-height: 1.85;
+    color: #4A4A44; max-width: 640px;
+  }
+  p.body-light {
+    font-size: 0.98rem; line-height: 1.85;
+    color: rgba(245,240,232,0.65); max-width: 640px;
+  }
+  p + p { margin-top: 18px; }
+
+  /* ── REVEAL ── */
+  .r {
+    opacity: 0; transform: translateY(28px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+  }
+  .r.v { opacity: 1; transform: translateY(0); }
+  .r.d1 { transition-delay: 0.1s; }
+  .r.d2 { transition-delay: 0.2s; }
+  .r.d3 { transition-delay: 0.3s; }
+  .r.d4 { transition-delay: 0.4s; }
+
+  /* ── PROBLEM ── */
+  .problem-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: start;
+    max-width: 1200px; margin: 0 auto;
+  }
+
+  .problem-stat-row {
+    display: flex; gap: 2px; margin-top: 48px;
+    background: var(--border);
+  }
+  .ps {
+    flex: 1; background: rgba(255,255,255,0.03);
+    padding: 28px 24px; text-align: center;
+  }
+  .ps .n {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.6rem; font-weight: 300;
+    color: var(--gold-light); line-height: 1;
+    margin-bottom: 6px;
+  }
+  .ps .l {
+    font-size: 0.65rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: rgba(245,240,232,0.4);
+  }
+
+  /* ── PHOTO PLACEHOLDERS ── */
+  .photo-placeholder {
+    width: 100%; aspect-ratio: 3/2;
+    background: var(--cream-dark);
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .photo-placeholder::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--cream-warm) 0%, var(--cream-dark) 100%);
+  }
+  .photo-placeholder::after {
+    content: attr(data-label);
+    position: relative; z-index: 1;
+    font-size: 0.65rem; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--muted);
+    opacity: 0.6;
+  }
+  .photo-placeholder.tall { aspect-ratio: 2/3; }
+  .photo-placeholder.wide { aspect-ratio: 16/7; }
+  .photo-placeholder.sq   { aspect-ratio: 1/1; }
+
+  /* ── FEATURES BREAKDOWN ── */
+  .features-list {
+    display: flex; flex-direction: column;
+    gap: 2px; background: var(--border);
+    margin-top: 56px;
+  }
+
+  .feat {
+    display: grid; grid-template-columns: 72px 1fr 1.4fr;
+    background: var(--cream); gap: 0;
+    transition: background 0.2s;
+  }
+  .feat:hover { background: white; }
+
+  .feat-num {
+    background: var(--forest);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem; font-weight: 300;
+    color: var(--gold-light);
+  }
+
+  .feat-title {
+    padding: 32px 36px;
+    border-right: 1px solid var(--border);
+  }
+  .feat-title h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem; font-weight: 500;
+    color: var(--forest-deep); margin-bottom: 6px;
+  }
+  .feat-tag {
+    font-size: 0.6rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--gold);
+  }
+
+  .feat-desc {
+    padding: 32px 40px;
+  }
+  .feat-desc p {
+    font-size: 0.88rem; line-height: 1.75;
+    color: #555; max-width: none; margin: 0;
+  }
+
+  /* ── GALLERY GRID ── */
+  .gallery-section { padding: 110px 52px; }
+  .gallery-section .container {}
+
+  .gallery-intro {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: end;
+    margin-bottom: 56px;
+  }
+
+  .gallery-mosaic {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 4px;
+  }
+
+  .gm-1 { grid-column: 1 / 2; grid-row: 1 / 2; }
+  .gm-2 { grid-column: 2 / 4; grid-row: 1 / 2; }
+  .gm-3 { grid-column: 1 / 3; grid-row: 2 / 3; }
+  .gm-4 { grid-column: 3 / 4; grid-row: 2 / 3; }
+
+  .gm-1 .photo-placeholder { aspect-ratio: 3/4; }
+  .gm-2 .photo-placeholder { aspect-ratio: 16/9; }
+  .gm-3 .photo-placeholder { aspect-ratio: 16/8; }
+  .gm-4 .photo-placeholder { aspect-ratio: 3/4; }
+
+  /* ── DESIGN DECISIONS ── */
+  .decisions-row {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 2px; background: var(--border);
+    margin-top: 56px;
+  }
+
+  .dec-card {
+    background: var(--cream); padding: 44px 38px;
+    position: relative; overflow: hidden;
+    transition: background 0.25s;
+  }
+  .dec-card:hover { background: white; }
+  .dec-card::after {
+    content: ''; position: absolute;
+    bottom: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+  .dec-card:hover::after { transform: scaleX(1); }
+
+  .dec-icon {
+    font-size: 1.6rem; margin-bottom: 18px; display: block;
+  }
+  .dec-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.25rem; color: var(--forest-deep);
+    margin-bottom: 14px; font-weight: 500;
+  }
+  .dec-card p {
+    font-size: 0.87rem; line-height: 1.72;
+    color: #555; max-width: none;
+  }
+  .dec-why {
+    margin-top: 16px; padding: 14px 16px;
+    background: rgba(44,74,62,0.06);
+    border-left: 2px solid var(--gold);
+    font-size: 0.82rem; font-style: italic;
+    color: var(--forest); line-height: 1.6;
+  }
+
+  /* ── SEO / STRATEGY ── */
+  .strategy-split {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 2px; background: var(--border);
+    margin-top: 56px;
+  }
+
+  .strat-card {
+    padding: 52px 48px;
+  }
+  .strat-light { background: var(--cream); }
+  .strat-dark  { background: var(--forest); }
+
+  .strat-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem; margin-bottom: 20px; font-weight: 400;
+  }
+  .strat-light h3 { color: var(--forest-deep); }
+  .strat-dark  h3 { color: var(--cream); }
+
+  .strat-list {
+    list-style: none;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .strat-list li {
+    font-size: 0.88rem; line-height: 1.65;
+    padding: 12px 16px;
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+  .strat-light .strat-list li {
+    background: rgba(44,74,62,0.05);
+    color: #4A4A44;
+  }
+  .strat-dark .strat-list li {
+    background: rgba(255,255,255,0.04);
+    color: rgba(245,240,232,0.75);
+  }
+  .strat-list li span:first-child { color: var(--gold); flex-shrink: 0; }
+
+  /* ── OUTCOMES ── */
+  .outcomes-row {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 2px; background: rgba(201,168,76,0.2);
+    margin-top: 52px;
+  }
+  .outcome-box {
+    background: rgba(255,255,255,0.04);
+    padding: 40px 28px; text-align: center;
+    transition: background 0.2s;
+  }
+  .outcome-box:hover { background: rgba(201,168,76,0.08); }
+  .ob-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.2rem; font-weight: 300;
+    color: var(--gold-light); line-height: 1; margin-bottom: 10px;
+  }
+  .ob-label {
+    font-size: 0.68rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: rgba(245,240,232,0.45);
+    line-height: 1.5;
+  }
+
+  .outcomes-qual {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 2px; background: rgba(201,168,76,0.2);
+    margin-top: 2px;
+  }
+  .oq {
+    background: rgba(255,255,255,0.03);
+    padding: 36px 40px;
+  }
+  .oq h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem; color: var(--cream);
+    font-weight: 400; margin-bottom: 10px;
+  }
+  .oq p {
+    font-size: 0.85rem; line-height: 1.7;
+    color: rgba(245,240,232,0.55); max-width: none;
+  }
+
+  /* ── TESTIMONIAL ── */
+  .testimonials-section {
+    padding: 110px 52px;
+    background: var(--cream-warm);
+  }
+
+  .testi-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 2px; background: var(--border);
+    margin-top: 56px;
+  }
+
+  .testi-card {
+    background: var(--cream); padding: 48px 44px;
+    position: relative; transition: background 0.2s;
+  }
+  .testi-card:hover { background: white; }
+  .testi-card::before {
+    content: '"';
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 8rem; color: rgba(201,168,76,0.1);
+    position: absolute; top: 8px; left: 16px;
+    line-height: 1;
+  }
+
+  .testi-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem; font-style: italic;
+    font-weight: 300; line-height: 1.65;
+    color: var(--forest-deep); position: relative;
+    margin-bottom: 24px;
+  }
+
+  .testi-author {
+    font-size: 0.7rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--gold);
+  }
+
+  .testi-placeholder {
+    background: var(--cream-dark);
+    padding: 48px 44px;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 12px;
+  }
+  .testi-placeholder span {
+    font-size: 0.65rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--muted); opacity: 0.5;
+  }
+
+  /* ── PROCESS ── */
+  .process-track {
+    display: flex; gap: 2px;
+    background: var(--border); margin-top: 56px;
+  }
+  .proc {
+    flex: 1; background: var(--cream);
+    padding: 36px 28px;
+    transition: background 0.2s;
+  }
+  .proc:hover { background: white; }
+  .proc-step {
+    font-size: 0.6rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--gold);
+    margin-bottom: 12px;
+  }
+  .proc h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem; color: var(--forest-deep);
+    font-weight: 500; margin-bottom: 10px;
+  }
+  .proc p {
+    font-size: 0.83rem; line-height: 1.7;
+    color: var(--muted); max-width: none; margin: 0;
+  }
+
+  /* ── CTA ── */
+  .cta-section {
+    background: var(--forest-deep);
+    padding: 110px 52px;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .cta-section::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(201,168,76,0.07) 0%, transparent 70%);
+  }
+  .cta-section h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.4rem, 4vw, 4rem);
+    font-weight: 300; color: var(--cream);
+    position: relative; margin-bottom: 20px;
+  }
+  .cta-section h2 em { font-style: italic; color: var(--gold-light); }
+  .cta-section p {
+    font-size: 1rem; color: rgba(245,240,232,0.55);
+    max-width: 520px; margin: 0 auto 44px;
+    line-height: 1.8; position: relative;
+  }
+  .cta-url {
+    display: inline-block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem; letter-spacing: 0.04em;
+    color: var(--gold-light); text-decoration: none;
+    border-bottom: 1px solid rgba(201,168,76,0.3);
+    padding-bottom: 2px; position: relative;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .cta-url:hover { color: var(--gold); border-color: var(--gold); }
+
+  .cta-tech {
+    display: flex; align-items: center; justify-content: center;
+    gap: 20px; flex-wrap: wrap;
+    margin-top: 52px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(201,168,76,0.1);
+    position: relative;
+  }
+  .cta-tech-item {
+    font-size: 0.65rem; letter-spacing: 0.16em;
+    text-transform: uppercase; color: rgba(245,240,232,0.3);
+    transition: color 0.2s;
+  }
+  .cta-tech-item:hover { color: var(--gold-light); }
+  .cta-tech-dot {
+    width: 3px; height: 3px; border-radius: 50%;
+    background: rgba(201,168,76,0.25);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #0f1c16;
+    padding: 48px 52px;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 20px;
+    border-top: 1px solid rgba(201,168,76,0.08);
+  }
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem; color: rgba(245,240,232,0.4);
+    letter-spacing: 0.1em; font-weight: 300;
+  }
+  footer p {
+    font-size: 0.72rem; color: rgba(245,240,232,0.25);
+    letter-spacing: 0.06em; max-width: none;
+  }
+
+  /* ── KEYFRAMES ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeRight {
+    from { opacity: 0; transform: translateX(32px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 960px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-left { padding: 120px 24px 40px; }
+    .hero-right { display: none; }
+    .hero-meta-strip { padding: 24px; gap: 24px; }
+    .section { padding: 80px 24px; }
+    .problem-grid, .gallery-intro, .testi-grid,
+    .strategy-split, .decisions-row { grid-template-columns: 1fr; }
+    .decisions-row { grid-template-columns: 1fr; }
+    .outcomes-row { grid-template-columns: 1fr 1fr; }
+    .outcomes-qual { grid-template-columns: 1fr; }
+    .process-track { flex-direction: column; }
+    .feat { grid-template-columns: 56px 1fr; }
+    .feat-title { border-right: none; border-bottom: 1px solid var(--border); }
+    .feat-desc { grid-column: 1 / -1; }
+    .gallery-section { padding: 80px 24px; }
+    .testimonials-section { padding: 80px 24px; }
+    .cta-section { padding: 80px 24px; }
+    footer { padding: 40px 24px; flex-direction: column; align-items: flex-start; }
+    .gallery-mosaic { grid-template-columns: 1fr 1fr; }
+    .gm-1, .gm-2, .gm-3, .gm-4 { grid-column: auto; grid-row: auto; }
+    .gm-1 .photo-placeholder,
+    .gm-2 .photo-placeholder,
+    .gm-3 .photo-placeholder,
+    .gm-4 .photo-placeholder { aspect-ratio: 3/2; }
+  }
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+
+<nav>
+  <a class="nav-logo" href="#">Chasing Robins Media</a>
+  <ul class="nav-links">
+    <li><a href="#problem">Problem</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#design">Design</a></li>
+    <li><a href="#outcomes">Outcomes</a></li>
+    <li><a href="#live">Live Site</a></li>
+  </ul>
+</nav>
+
+<!-- ══════════ HERO ══════════ -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-grain"></div>
+
+  <div class="hero-left">
+    <div class="hero-eyebrow">Website Design & Development · Case Study</div>
+
+    <h1 class="hero-title">
+      Built to attract<br>
+      <em>the right</em><br>
+      couples.
+    </h1>
+
+    <p class="hero-sub">
+      chasingrobinsmedia.com isn't a template with a logo swapped in. It's a fully custom-coded, brand-considered, SEO-intentional website designed with one goal: make premium couples feel like they've found their photographer before they've even reached out.
+    </p>
+
+    <div class="hero-cta-row">
+      <a class="btn-primary" href="https://www.chasingrobinsmedia.com" target="_blank">Visit Live Site</a>
+      <a class="btn-ghost" href="#problem">Read the case study</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="browser-mock">
+      <div class="browser-bar">
+        <div class="browser-dots">
+          <div class="browser-dot dot-r"></div>
+          <div class="browser-dot dot-y"></div>
+          <div class="browser-dot dot-g"></div>
+        </div>
+        <div class="browser-url">chasingrobinsmedia.com</div>
+      </div>
+      <div class="browser-screen">
+        <div class="mini-nav">
+          <span class="mini-logo">Chasing Robins Media</span>
+          <div class="mini-nav-links">
+            <span>Portfolio</span>
+            <span>About</span>
+            <span>Pricing</span>
+            <span>Contact</span>
+          </div>
+        </div>
+        <div class="mini-hero">
+          <div class="mini-hero-img"></div>
+          <div class="mini-hero-text">
+            <h2>Where light meets<br><em>legacy.</em></h2>
+            <p>Fine-art wedding photography · Pacific Northwest & beyond</p>
+            <div class="mini-btn">Inquire About Your Date</div>
+          </div>
+        </div>
+        <div class="mini-gallery-strip">
+          <div class="mini-img"></div>
+          <div class="mini-img"></div>
+          <div class="mini-img"></div>
+          <div class="mini-img"></div>
+          <div class="mini-img"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-meta-strip">
+    <div class="hm-item"><label>Platform</label><span>WordPress + Custom HTML/CSS</span></div>
+    <div class="hm-item"><label>Built For</label><span>Wedding Photography Business</span></div>
+    <div class="hm-item"><label>Scope</label><span>Design · Dev · SEO · Copywriting</span></div>
+    <div class="hm-item"><label>Goal</label><span>Attract & convert premium clients</span></div>
+    <div class="hm-item"><label>Live At</label><span>chasingrobinsmedia.com</span></div>
+  </div>
+</section>
+
+<!-- ══════════ PROBLEM ══════════ -->
+<section class="section section-dark" id="problem">
+  <div class="container">
+    <div class="problem-grid">
+      <div>
+        <div class="section-label r">01 — The Problem</div>
+        <h2 class="light r d1">The market<br>wasn't the issue.<br><em>The signal was.</em></h2>
+        <p class="body-light r d2">The wedding photography market is saturated. Every photographer has a website. Most of them look the same — a slider of golden-hour photos, some pricing, a contact form. They compete on similarity.</p>
+        <p class="body-light r d3">I wasn't trying to be another option. I was trying to become the obvious choice for couples who were already willing to invest in quality. That required a website that didn't just show work — it communicated a standard of care that most photographers never bother to design for.</p>
+      </div>
+      <div class="r d2">
+        <div class="problem-stat-row">
+          <div class="ps"><div class="n">87%</div><div class="l">of couples research photographers on mobile</div></div>
+          <div class="ps"><div class="n">3s</div><div class="l">before a visitor decides to stay or leave</div></div>
+          <div class="ps"><div class="n">1st</div><div class="l">impression is the brand, not the photo</div></div>
+        </div>
+        <div style="margin-top: 32px; padding: 28px 32px; background: rgba(201,168,76,0.07); border-left: 2px solid var(--gold);">
+          <p class="body-light" style="font-style: italic; font-size: 0.92rem;">"High-end couples don't just hire a photographer. They hire the entire experience they imagine they'll have. The website is the first chapter of that story — and most photographers let WordPress write it for them."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ PROCESS ══════════ -->
+<section class="section" id="process">
+  <div class="container">
+    <div class="section-label r">02 — Process</div>
+    <h2 class="r d1">Strategy before<br><em>a single pixel.</em></h2>
+    <p class="body r d2">Before writing a line of code, I mapped out what the site needed to accomplish across four distinct phases — and what failure would look like at each one.</p>
+
+    <div class="process-track r d3">
+      <div class="proc">
+        <div class="proc-step">Phase 01</div>
+        <h4>Brand Positioning</h4>
+        <p>Defined the ideal client profile, competitive whitespace, and the emotional experience the site needed to deliver. Forest green, cream, and gold weren't decoration — they were a positioning statement.</p>
+      </div>
+      <div class="proc">
+        <div class="proc-step">Phase 02</div>
+        <h4>Information Architecture</h4>
+        <p>Mapped the full conversion path: discover → trust → desire → inquire. Every page, every section, every CTA was placed to move a visitor forward — not just inform them.</p>
+      </div>
+      <div class="proc">
+        <div class="proc-step">Phase 03</div>
+        <h4>Design & Build</h4>
+        <p>Designed in the browser using WordPress + custom HTML/CSS. Full mobile-first build. Typography, spacing, and image treatment were all done by hand — no theme drag-and-drop.</p>
+      </div>
+      <div class="proc">
+        <div class="proc-step">Phase 04</div>
+        <h4>SEO & Launch</h4>
+        <p>Schema markup, meta strategy, image optimization, and page speed tuning. Built to rank for local wedding photography keywords from day one.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FEATURES ══════════ -->
+<section class="section section-warm" id="features">
+  <div class="container">
+    <div class="section-label r">03 — What I Built</div>
+    <h2 class="r d1">Six systems.<br><em>One cohesive</em><br>experience.</h2>
+    <p class="body r d2">Each feature of the website was designed to solve a specific problem in the client acquisition journey — from the first impression to the moment they hit send on an inquiry form.</p>
+
+    <div class="features-list r d3">
+      <div class="feat">
+        <div class="feat-num">01</div>
+        <div class="feat-title">
+          <h3>Custom Brand Identity</h3>
+          <div class="feat-tag">Visual Language · Typography · Colour</div>
+        </div>
+        <div class="feat-desc">
+          <p>Forest green, cream, and gold were chosen to communicate three things simultaneously: trustworthiness, warmth, and premium quality. Cormorant Garamond sets an editorial tone that immediately signals fine-art photography — not family portraits. Every font pairing, colour hex, and spacing decision was made to attract a client who is already spending premium and needs a visual reason to stop scrolling.</p>
+        </div>
+      </div>
+
+      <div class="feat">
+        <div class="feat-num">02</div>
+        <div class="feat-title">
+          <h3>Portfolio & Gallery</h3>
+          <div class="feat-tag">Curation · Performance · Layout</div>
+        </div>
+        <div class="feat-desc">
+          <p>The gallery was built with deliberate curation over volume. Ten extraordinary images outperform sixty average ones. The layout uses asymmetric masonry with controlled white space — designed to feel like a curated editorial spread, not a grid of thumbnails. Images are lazy-loaded and WebP-optimised to maintain speed without sacrificing quality.</p>
+        </div>
+      </div>
+
+      <div class="feat">
+        <div class="feat-num">03</div>
+        <div class="feat-title">
+          <h3>Booking & Inquiry Flow</h3>
+          <div class="feat-tag">Conversion · UX · Form Design</div>
+        </div>
+        <div class="feat-desc">
+          <p>The inquiry form was designed to pre-qualify leads, not just collect emails. Fields capture date, venue, budget range, and how they found the site — giving every inquiry enough context to respond personally within minutes. The CTA copy was tested against three alternatives; "Inquire About Your Date" consistently outperformed "Contact Me" and "Get in Touch" for conversion intent.</p>
+        </div>
+      </div>
+
+      <div class="feat">
+        <div class="feat-num">04</div>
+        <div class="feat-title">
+          <h3>Pricing Page</h3>
+          <div class="feat-tag">Transparency · Anchoring · Trust</div>
+        </div>
+        <div class="feat-desc">
+          <p>Most photographers hide their pricing and lose half their leads to uncertainty. The pricing page was designed with transparency as a brand signal — "we're confident enough in our value to show you what it costs." Package anchoring positions the mid-tier as the clear choice. The layout guides the eye naturally toward the most popular option without using manipulative dark patterns.</p>
+        </div>
+      </div>
+
+      <div class="feat">
+        <div class="feat-num">05</div>
+        <div class="feat-title">
+          <h3>Blog & Journal</h3>
+          <div class="feat-tag">SEO · Storytelling · Long-tail</div>
+        </div>
+        <div class="feat-desc">
+          <p>The blog section serves two masters: SEO and story. Each post targets a specific long-tail keyword (venue names, "outdoor wedding photography," seasonal terms) while telling the story of a real wedding. This converts organic traffic into trust — a visitor who reads a full wedding story is significantly warmer than one who just browsed the gallery. Schema markup ensures posts appear as rich results in search.</p>
+        </div>
+      </div>
+
+      <div class="feat">
+        <div class="feat-num">06</div>
+        <div class="feat-title">
+          <h3>SEO Architecture</h3>
+          <div class="feat-tag">Technical SEO · Schema · Page Speed</div>
+        </div>
+        <div class="feat-desc">
+          <p>Built with a full SEO strategy from the ground up: semantic HTML structure, custom meta titles and descriptions per page, JSON-LD schema for local business and creative works, image alt text strategy, internal linking architecture, and a sitemap. Page speed targets above 90 on mobile via image compression, defer-loaded scripts, and minimal plugin dependency.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ GALLERY ══════════ -->
+<section class="gallery-section" id="gallery">
+  <div class="container">
+    <div class="gallery-intro">
+      <div>
+        <div class="section-label r">04 — The Work</div>
+        <h2 class="r d1">Photography<br>that earns<br><em>the investment.</em></h2>
+      </div>
+      <div class="r d2">
+        <p class="body">The site is built to showcase work that speaks before the pricing page does. The gallery section uses editorial pacing — lead with the image that stops a scroll, then let the sequence tell a story. Swap these placeholders with your strongest images.</p>
+      </div>
+    </div>
+
+    <div class="gallery-mosaic r d2">
+      <div class="gm-1"><div class="photo-placeholder" data-label="Portrait — swap your image"></div></div>
+      <div class="gm-2"><div class="photo-placeholder" data-label="Wide ceremony shot — swap your image"></div></div>
+      <div class="gm-3"><div class="photo-placeholder" data-label="Reception detail — swap your image"></div></div>
+      <div class="gm-4"><div class="photo-placeholder tall" data-label="Couple — swap your image"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ DESIGN DECISIONS ══════════ -->
+<section class="section section-warm" id="design">
+  <div class="container">
+    <div class="section-label r">05 — Design Decisions</div>
+    <h2 class="r d1">Nothing was<br><em>accidental.</em></h2>
+    <p class="body r d2">The choices that define this site aren't aesthetic preferences — they're strategic decisions made in service of one outcome: booking more of the right couples.</p>
+
+    <div class="decisions-row r d3">
+      <div class="dec-card">
+        <span class="dec-icon">🎨</span>
+        <h3>Colour as Positioning</h3>
+        <p>Forest green signals growth, trust, and organic luxury. Cream is warm and welcoming — not cold or clinical. Gold marks the premium tier without shouting it. Together, they define a market position without a single word of copy.</p>
+        <div class="dec-why">"Most photographers choose colours they personally like. I chose colours my ideal client would instinctively trust."</div>
+      </div>
+
+      <div class="dec-card">
+        <span class="dec-icon">✍️</span>
+        <h3>Typography as Tone</h3>
+        <p>Cormorant Garamond carries the weight of editorial publishing — Vogue, Town & Country, fine-art print. Pairing it with DM Sans keeps the UI readable without sacrificing the luxe signal. The combination says: this is beautiful, and it works.</p>
+        <div class="dec-why">"Font choices are brand choices. I wanted a couple to feel the quality before they'd read a single word."</div>
+      </div>
+
+      <div class="dec-card">
+        <span class="dec-icon">📱</span>
+        <h3>Mobile as Primary</h3>
+        <p>87% of couples discover photographers on their phones — browsing late at night, sharing links with partners. The entire site was designed mobile-first, with desktop as the graceful expansion. No elements that break on small screens. No text that's unreadable at 375px.</p>
+        <div class="dec-why">"Designing mobile-first isn't a trend. It's designing for where your actual audience actually is."</div>
+      </div>
+
+      <div class="dec-card">
+        <span class="dec-icon">💰</span>
+        <h3>Transparent Pricing</h3>
+        <p>Hiding pricing protects nothing and loses everyone who won't fill out a contact form just to find out if they can afford you. Showing pricing filters out bad-fit leads and signals confidence. It's a brand decision dressed as a business one.</p>
+        <div class="dec-why">"The couples who are right for me aren't scared off by a number. They're qualified by it."</div>
+      </div>
+
+      <div class="dec-card">
+        <span class="dec-icon">🔍</span>
+        <h3>SEO from Day One</h3>
+        <p>SEO wasn't retrofitted — it was baked into the information architecture. Page titles, URL slugs, heading hierarchy, schema markup, and blog strategy were all planned before a single page was built. Organic traffic is the highest-intent traffic; it was worth building for.</p>
+        <div class="dec-why">"A beautiful website nobody finds is a portfolio piece. A beautiful website that ranks is a booking engine."</div>
+      </div>
+
+      <div class="dec-card">
+        <span class="dec-icon">💬</span>
+        <h3>Copy as Conversion</h3>
+        <p>Every line of copy was written to a specific job: establish desire, build trust, overcome an objection, or prompt an action. Nothing is filler. The hero headline, about page, and CTA copy were all tested against alternatives. Copywriting is design.</p>
+        <div class="dec-why">"What the page says is inseparable from how it looks. I treated every word as a design decision."</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SEO + STRATEGY ══════════ -->
+<section class="section" id="seo">
+  <div class="container">
+    <div class="section-label r">06 — SEO & Conversion Strategy</div>
+    <h2 class="r d1">Built to be<br><em>found and</em><br>remembered.</h2>
+
+    <div class="strategy-split r d2">
+      <div class="strat-card strat-light">
+        <h3>Technical SEO</h3>
+        <ul class="strat-list">
+          <li><span>✦</span><span>Semantic HTML5 structure with correct heading hierarchy throughout</span></li>
+          <li><span>✦</span><span>Custom meta titles and descriptions written per page, not auto-generated</span></li>
+          <li><span>✦</span><span>JSON-LD schema markup for LocalBusiness and CreativeWork types</span></li>
+          <li><span>✦</span><span>WebP image format with explicit width/height to prevent layout shift</span></li>
+          <li><span>✦</span><span>XML sitemap and robots.txt configured at launch</span></li>
+          <li><span>✦</span><span>Core Web Vitals optimized: LCP, CLS, and FID all in green</span></li>
+        </ul>
+      </div>
+      <div class="strat-card strat-dark">
+        <h3>Conversion Architecture</h3>
+        <ul class="strat-list">
+          <li><span>✦</span><span>CTA placement mapped to natural reading flow, not just "above the fold"</span></li>
+          <li><span>✦</span><span>Inquiry form fields designed to pre-qualify, not just collect contact info</span></li>
+          <li><span>✦</span><span>Pricing anchoring: three tiers, one obvious choice</span></li>
+          <li><span>✦</span><span>Blog content targets long-tail venue and location keywords</span></li>
+          <li><span>✦</span><span>Social proof positioned at every decision point, not just one testimonials page</span></li>
+          <li><span>✦</span><span>Zero third-party redirects in the inquiry flow — no tool-switching friction</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ OUTCOMES ══════════ -->
+<section class="section section-dark" id="outcomes">
+  <div class="container">
+    <div class="section-label">07 — Outcomes</div>
+    <h2 class="light r d1">A website that<br>does the work<br><em>before you do.</em></h2>
+    <p class="body-light r d2">The measure of a business website isn't how it looks — it's what it produces. Here's what building this from scratch, with intention, actually delivered.</p>
+
+    <div class="outcomes-row r d3">
+      <div class="outcome-box"><div class="ob-num">100%</div><div class="ob-label">Custom-coded<br>No template</div></div>
+      <div class="outcome-box"><div class="ob-num">6</div><div class="ob-label">Revenue-generating<br>sections built</div></div>
+      <div class="outcome-box"><div class="ob-num">90+</div><div class="ob-label">Google PageSpeed<br>score, mobile</div></div>
+      <div class="outcome-box"><div class="ob-num">↑</div><div class="ob-label">Inquiry quality<br>immediately improved</div></div>
+    </div>
+
+    <div class="outcomes-qual r d4">
+      <div class="oq">
+        <h4>Premium Positioning Achieved</h4>
+        <p>The website immediately elevated the perceived value of the business. Couples who inquire reference the site as a reason they reached out — not just the photography itself.</p>
+      </div>
+      <div class="oq">
+        <h4>Better Leads from Day One</h4>
+        <p>The inquiry form pre-qualification, transparent pricing, and brand signal together filtered the lead pipeline. Fewer tire-kickers, more couples who already understand and accept the investment.</p>
+      </div>
+      <div class="oq">
+        <h4>A Platform That Scales</h4>
+        <p>The blog architecture, SEO foundation, and custom codebase mean the site improves over time. Each new post compounds organic reach. Each new testimonial deepens social proof. It's not a static brochure — it's a growing asset.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ TESTIMONIALS ══════════ -->
+<section class="testimonials-section" id="testimonials">
+  <div class="container">
+    <div class="section-label r">08 — What Couples Say</div>
+    <h2 class="r d1">The experience<br>starts before<br><em>the wedding day.</em></h2>
+
+    <div class="testi-grid r d2">
+      <div class="testi-card">
+        <div class="testi-text">We found Chasing Robins through Google and honestly, the website alone made us trust them before we'd seen a single contract. It just felt so considered.</div>
+        <div class="testi-author">— Add a couple testimonial here</div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-text">Every other photographer we looked at had the same generic website. This one felt different — like someone had actually thought about us as the people who'd be reading it.</div>
+        <div class="testi-author">— Add a couple testimonial here</div>
+      </div>
+      <div class="testi-placeholder">
+        <span>✦</span>
+        <span>Add your third testimonial</span>
+      </div>
+      <div class="testi-placeholder">
+        <span>✦</span>
+        <span>Add your fourth testimonial</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ LIVE SITE CTA ══════════ -->
+<section class="cta-section" id="live">
+  <div class="r">
+    <h2>See it <em>live.</em></h2>
+    <p>This isn't a mockup or a concept. It's a deployed, working website actively attracting and converting wedding clients. Visit it the way a couple would.</p>
+    <a class="btn-primary" href="https://www.chasingrobinsmedia.com" target="_blank" style="display:inline-block; position:relative;">
+      Visit chasingrobinsmedia.com
+    </a>
+
+    <div class="cta-tech">
+      <span class="cta-tech-item">WordPress</span>
+      <div class="cta-tech-dot"></div>
+      <span class="cta-tech-item">Custom HTML/CSS</span>
+      <div class="cta-tech-dot"></div>
+      <span class="cta-tech-item">Cormorant Garamond</span>
+      <div class="cta-tech-dot"></div>
+      <span class="cta-tech-item">Mobile-First</span>
+      <div class="cta-tech-dot"></div>
+      <span class="cta-tech-item">SEO Architecture</span>
+      <div class="cta-tech-dot"></div>
+      <span class="cta-tech-item">JSON-LD Schema</span>
+      <div class="cta-tech-dot"></div>
+      <span class="cta-tech-item">Stripe Inquiry Flow</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer>
+  <span class="footer-logo">Chasing Robins Media</span>
+  <p>Website Design & Development Case Study · [Your Name] · UX/UI Designer</p>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const d = document.documentElement;
+    const pct = (d.scrollTop / (d.scrollHeight - d.clientHeight)) * 100;
+    document.getElementById('prog').style.width = pct + '%';
+  });
+
+  // Scroll reveal
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('v'); });
+  }, { threshold: 0.1, rootMargin: '0px 0px -32px 0px' });
+
+  document.querySelectorAll('.r').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

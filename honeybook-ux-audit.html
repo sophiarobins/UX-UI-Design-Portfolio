@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HoneyBook UX Audit — Chasing Robins Media Case Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --forest:      #2C4A3E;
+    --forest-deep: #1a2e27;
+    --forest-mid:  #3d6357;
+    --cream:       #F5F0E8;
+    --cream-warm:  #EDE7D7;
+    --cream-dark:  #E4DDD0;
+    --gold:        #C9A84C;
+    --gold-light:  #E2C27A;
+    --charcoal:    #2A2A2A;
+    --muted:       #7A7A72;
+    --border:      rgba(201,168,76,0.22);
+    --hb:          #e8784d;
+    --hb-light:    #f5c4b0;
+    --hb-pale:     #fdf0eb;
+    --red:         #c0392b;
+    --orange:      #d35400;
+    --amber:       #C9A84C;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--charcoal);
+    overflow-x: hidden;
+  }
+
+  #prog {
+    position: fixed; top: 0; left: 0;
+    height: 2px; width: 0%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    z-index: 1000; transition: width 0.08s linear;
+  }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    padding: 18px 52px;
+    display: flex; justify-content: space-between; align-items: center;
+    backdrop-filter: blur(14px);
+    background: rgba(245,240,232,0.92);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem; font-weight: 500;
+    letter-spacing: 0.1em; color: var(--forest); text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 28px; list-style: none; }
+  .nav-links a {
+    font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); text-decoration: none; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--forest); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    background: var(--forest-deep);
+    display: grid; grid-template-columns: 1fr 1fr;
+    align-items: end; position: relative; overflow: hidden;
+  }
+  .hero-glow {
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 60% 50% at 80% 10%, rgba(232,120,77,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 5% 90%, rgba(44,74,62,0.5) 0%, transparent 55%);
+  }
+  .hero-left {
+    padding: 160px 52px 80px; position: relative;
+  }
+  .hero-eyebrow {
+    font-size: 0.64rem; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--gold); display: flex; align-items: center; gap: 14px;
+    margin-bottom: 26px;
+    opacity: 0; animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+  .hero-eyebrow::before {
+    content: ''; width: 32px; height: 1px;
+    background: var(--gold); opacity: 0.6; display: block;
+  }
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.8rem, 5.5vw, 6rem);
+    font-weight: 300; line-height: 0.97; color: var(--cream);
+    opacity: 0; animation: fadeUp 0.9s ease 0.35s forwards;
+  }
+  .hero-title em { font-style: italic; color: var(--gold-light); }
+  .hero-title .hb { color: var(--hb); }
+  .hero-title .crossed {
+    text-decoration: line-through;
+    text-decoration-color: var(--hb);
+    opacity: 0.7;
+  }
+
+  .hero-sub {
+    margin-top: 30px; font-size: 0.98rem; line-height: 1.78;
+    color: rgba(245,240,232,0.58); max-width: 480px;
+    opacity: 0; animation: fadeUp 0.9s ease 0.5s forwards;
+  }
+
+  .hero-tags {
+    display: flex; gap: 10px; flex-wrap: wrap; margin-top: 40px;
+    opacity: 0; animation: fadeUp 0.9s ease 0.65s forwards;
+  }
+  .tag {
+    font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase;
+    padding: 6px 13px; border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(245,240,232,0.45);
+  }
+  .tag.gold { border-color: var(--gold); color: var(--gold); }
+  .tag.hb   { border-color: var(--hb);  color: var(--hb); }
+
+  .hero-verdict {
+    margin-top: 44px; padding: 28px 32px;
+    background: rgba(232,120,77,0.08);
+    border-left: 3px solid var(--hb);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.25rem; font-style: italic;
+    color: rgba(245,240,232,0.8); line-height: 1.6; max-width: 520px;
+    opacity: 0; animation: fadeUp 0.9s ease 0.78s forwards;
+  }
+
+  .hero-right {
+    padding: 160px 52px 80px; position: relative;
+    opacity: 0; animation: fadeUp 0.9s ease 0.5s forwards;
+  }
+
+  .score-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    padding: 36px 32px;
+  }
+  .score-card-title {
+    font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: rgba(245,240,232,0.4); margin-bottom: 28px;
+  }
+  .score-row {
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 16px;
+  }
+  .score-label {
+    font-size: 0.78rem; color: rgba(245,240,232,0.6);
+    width: 160px; flex-shrink: 0;
+  }
+  .score-bar-wrap {
+    flex: 1; height: 4px;
+    background: rgba(255,255,255,0.08);
+    position: relative; overflow: visible;
+  }
+  .score-bar {
+    height: 100%; position: absolute; left: 0; top: 0;
+    transition: width 1.5s cubic-bezier(0.23,1,0.32,1);
+  }
+  .score-bar.red   { background: var(--red); }
+  .score-bar.orange{ background: var(--orange); }
+  .score-bar.amber { background: var(--amber); }
+  .score-bar.green { background: #27ae60; }
+  .score-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem; font-weight: 300;
+    width: 28px; text-align: right; flex-shrink: 0;
+  }
+  .score-num.red   { color: var(--red); }
+  .score-num.orange{ color: var(--orange); }
+  .score-num.amber { color: var(--amber); }
+  .score-num.green { color: #27ae60; }
+
+  .score-total {
+    margin-top: 28px; padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .score-total-label {
+    font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: rgba(245,240,232,0.4);
+  }
+  .score-total-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.4rem; font-weight: 300; color: var(--orange);
+  }
+  .score-total-sub {
+    font-size: 0.68rem; color: rgba(245,240,232,0.3); margin-top: 4px;
+    text-align: right;
+  }
+
+  .hero-meta-strip {
+    grid-column: 1 / -1;
+    padding: 28px 52px; display: flex; gap: 44px; flex-wrap: wrap;
+    background: rgba(26,46,39,0.7);
+    border-top: 1px solid rgba(201,168,76,0.1);
+    opacity: 0; animation: fadeUp 0.9s ease 0.95s forwards;
+  }
+  .hm label {
+    display: block; font-size: 0.58rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--gold); opacity: 0.65; margin-bottom: 5px;
+  }
+  .hm span { font-size: 0.8rem; color: rgba(245,240,232,0.6); }
+
+  /* SHARED */
+  .section { padding: 100px 52px; }
+  .container { max-width: 1160px; margin: 0 auto; }
+  .section-warm   { background: var(--cream-warm); }
+  .section-dark   { background: var(--forest-deep); }
+  .section-forest { background: var(--forest); }
+  .section-hb     { background: #fdf5f2; }
+
+  .label {
+    font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--gold); display: flex; align-items: center; gap: 12px;
+    margin-bottom: 18px;
+  }
+  .label::before {
+    content: ''; width: 24px; height: 1px;
+    background: var(--gold); opacity: 0.7; display: block;
+  }
+  .label.light::before { background: var(--gold-light); }
+  .label.light { color: var(--gold-light); }
+
+  h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 3.5vw, 3.4rem);
+    font-weight: 400; line-height: 1.1;
+    color: var(--forest-deep); margin-bottom: 24px;
+  }
+  h2 em { font-style: italic; color: var(--forest-mid); }
+  h2.light { color: var(--cream); }
+  h2.light em { color: var(--gold-light); }
+
+  p.body { font-size: 0.97rem; line-height: 1.85; color: #4A4A44; max-width: 640px; }
+  p.body + p.body { margin-top: 16px; }
+  p.light { font-size: 0.97rem; line-height: 1.85; color: rgba(245,240,232,0.62); max-width: 640px; }
+
+  .r { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .r.v { opacity: 1; transform: translateY(0); }
+  .r.d1 { transition-delay: 0.1s; } .r.d2 { transition-delay: 0.2s; }
+  .r.d3 { transition-delay: 0.3s; } .r.d4 { transition-delay: 0.4s; }
+
+  /* AUDIT CARDS */
+  .audit-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 2px; background: var(--border); margin-top: 52px;
+  }
+  .audit-card {
+    background: var(--cream); padding: 40px 34px;
+    transition: background 0.2s; position: relative; overflow: hidden;
+  }
+  .audit-card:hover { background: white; }
+  .audit-card::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+    transform: scaleX(0); transform-origin: left; transition: transform 0.3s;
+  }
+  .audit-card:hover::after { transform: scaleX(1); }
+  .ac-critical::after { background: var(--red); }
+  .ac-major::after    { background: var(--orange); }
+  .ac-friction::after { background: var(--amber); }
+
+  .audit-sev {
+    font-size: 0.58rem; letter-spacing: 0.16em; text-transform: uppercase;
+    display: flex; align-items: center; gap: 7px; margin-bottom: 16px;
+  }
+  .sev-dot { width: 7px; height: 7px; border-radius: 50%; }
+  .ac-critical .sev-dot { background: var(--red); }
+  .ac-critical .sev-text { color: var(--red); }
+  .ac-major .sev-dot    { background: var(--orange); }
+  .ac-major .sev-text   { color: var(--orange); }
+  .ac-friction .sev-dot { background: var(--amber); }
+  .ac-friction .sev-text{ color: var(--amber); }
+
+  .audit-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.25rem; color: var(--forest-deep);
+    font-weight: 500; margin-bottom: 10px;
+  }
+  .audit-card p { font-size: 0.86rem; line-height: 1.72; color: #555; max-width: none; }
+  .audit-impact {
+    margin-top: 16px; padding: 12px 14px;
+    background: rgba(44,74,62,0.05);
+    border-left: 2px solid var(--gold);
+    font-size: 0.8rem; color: var(--forest); font-style: italic; line-height: 1.55;
+  }
+
+  /* SIDE BY SIDE */
+  .sbs-intro {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 2px; background: var(--border); margin-top: 52px;
+  }
+  .sbs-header {
+    padding: 28px 36px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .sbs-hb   { background: #fdf0eb; }
+  .sbs-crm  { background: var(--forest); }
+
+  .sbs-badge {
+    font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase;
+    padding: 6px 14px; font-weight: 500;
+  }
+  .badge-hb  { background: var(--hb); color: white; }
+  .badge-crm { background: var(--gold); color: var(--forest-deep); }
+
+  .sbs-header h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem; font-weight: 400;
+  }
+  .sbs-hb h3   { color: var(--hb); }
+  .sbs-crm h3  { color: var(--cream); }
+
+  .sbs-rows {
+    display: contents;
+  }
+
+  .sbs-row {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 2px; background: var(--border);
+    margin-top: 2px;
+  }
+  .sbs-row:first-of-type { margin-top: 0; }
+
+  .sbs-cell {
+    padding: 32px 36px;
+  }
+  .sbs-cell-hb  { background: #fdf5f2; }
+  .sbs-cell-crm { background: rgba(44,74,62,0.04); }
+
+  .sbs-topic {
+    font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase;
+    margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+    font-weight: 500;
+  }
+  .sbs-cell-hb  .sbs-topic { color: var(--hb); }
+  .sbs-cell-crm .sbs-topic { color: var(--forest); }
+
+  .sbs-cell p { font-size: 0.88rem; line-height: 1.72; color: #4A4A44; max-width: none; }
+
+  .sbs-verdict {
+    margin-top: 14px; padding: 12px 14px;
+    font-size: 0.8rem; line-height: 1.55; font-style: italic;
+  }
+  .sbs-cell-hb  .sbs-verdict { background: rgba(232,120,77,0.08); border-left: 2px solid var(--hb);   color: var(--hb); }
+  .sbs-cell-crm .sbs-verdict { background: rgba(44,74,62,0.08);   border-left: 2px solid var(--forest); color: var(--forest); }
+
+  /* WHAT I'D FIX */
+  .fix-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 2px; background: rgba(201,168,76,0.15); margin-top: 52px;
+  }
+  .fix-card {
+    background: rgba(255,255,255,0.03); padding: 44px 40px;
+  }
+  .fix-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem; color: var(--cream);
+    font-weight: 400; margin-bottom: 14px;
+  }
+  .fix-label {
+    font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--gold-light); margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .fix-label::before { content: ''; width: 18px; height: 1px; background: var(--gold-light); opacity: 0.5; display: block; }
+  .fix-card p { font-size: 0.87rem; line-height: 1.72; color: rgba(245,240,232,0.58); max-width: none; }
+  .fix-screens {
+    margin-top: 18px; display: flex; flex-direction: column; gap: 6px;
+  }
+  .fix-screen {
+    font-size: 0.78rem; color: rgba(245,240,232,0.5);
+    padding: 9px 13px; background: rgba(255,255,255,0.04);
+    display: flex; align-items: flex-start; gap: 10px; line-height: 1.5;
+  }
+  .fix-screen::before { content: '→'; color: var(--gold); font-size: 0.75rem; flex-shrink: 0; margin-top: 1px; }
+
+  /* NARRATIVE ARC */
+  .arc {
+    display: flex; gap: 2px; background: var(--border); margin-top: 52px;
+  }
+  .arc-step {
+    flex: 1; background: var(--cream); padding: 36px 28px;
+    position: relative; transition: background 0.2s;
+  }
+  .arc-step:hover { background: white; }
+  .arc-arrow {
+    position: absolute; right: -12px; top: 50%;
+    transform: translateY(-50%);
+    width: 24px; height: 24px;
+    background: var(--gold); color: var(--forest-deep);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; z-index: 1;
+  }
+  .arc-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.5rem; font-weight: 300;
+    color: rgba(201,168,76,0.15); line-height: 1; margin-bottom: 4px;
+  }
+  .arc-tag {
+    font-size: 0.58rem; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 8px;
+  }
+  .arc-step h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem; color: var(--forest-deep); font-weight: 500; margin-bottom: 8px;
+  }
+  .arc-step p { font-size: 0.82rem; line-height: 1.68; color: var(--muted); max-width: none; margin: 0; }
+
+  /* OUTCOMES COMPARE */
+  .outcomes-compare {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 2px; background: var(--border); margin-top: 52px;
+  }
+  .oc-side { padding: 52px 48px; }
+  .oc-hb   { background: var(--cream-warm); }
+  .oc-crm  { background: var(--forest); }
+
+  .oc-side h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem; font-weight: 400; margin-bottom: 24px;
+  }
+  .oc-hb h3  { color: var(--charcoal); }
+  .oc-crm h3 { color: var(--cream); }
+
+  .oc-items { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .oc-items li {
+    font-size: 0.87rem; line-height: 1.6;
+    padding: 13px 16px; display: flex; align-items: flex-start; gap: 12px;
+  }
+  .oc-hb  .oc-items li { background: rgba(232,120,77,0.06); color: #4A4A44; }
+  .oc-crm .oc-items li { background: rgba(255,255,255,0.05); color: rgba(245,240,232,0.75); }
+  .oc-icon { flex-shrink: 0; font-size: 0.85rem; }
+
+  /* PULL QUOTE */
+  .pull-quote {
+    background: var(--forest); padding: 72px 64px;
+    position: relative; overflow: hidden;
+  }
+  .pull-quote::before {
+    content: '"';
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14rem; color: rgba(201,168,76,0.08);
+    position: absolute; top: -30px; left: 16px; line-height: 1;
+  }
+  .pull-quote blockquote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.6rem, 2.4vw, 2.4rem);
+    font-weight: 300; font-style: italic;
+    line-height: 1.5; color: var(--cream);
+    position: relative; max-width: 800px; margin: 0 auto; text-align: center;
+  }
+  .pull-quote cite {
+    display: block; font-size: 0.7rem; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--gold);
+    font-style: normal; margin-top: 24px; text-align: center;
+  }
+
+  /* FIGMA GUIDE */
+  .figma-cols {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 2px; background: var(--border); margin-top: 52px;
+  }
+  .figma-col { background: var(--cream); padding: 44px 40px; }
+  .figma-col.dark { background: var(--forest-deep); }
+  .figma-col h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.25rem; font-weight: 500; margin-bottom: 18px;
+  }
+  .figma-col h3 { color: var(--forest-deep); }
+  .figma-col.dark h3 { color: var(--cream); }
+
+  .check-list { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+  .check-list li {
+    font-size: 0.85rem; line-height: 1.6; color: #4A4A44;
+    display: flex; align-items: flex-start; gap: 11px;
+    padding: 10px 14px; background: rgba(44,74,62,0.04);
+  }
+  .figma-col.dark .check-list li {
+    color: rgba(245,240,232,0.65);
+    background: rgba(255,255,255,0.04);
+  }
+  .ck { color: var(--gold); flex-shrink: 0; }
+
+  /* FOOTER */
+  footer {
+    background: #0f1c16; padding: 44px 52px;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 20px;
+    border-top: 1px solid rgba(201,168,76,0.08);
+  }
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem; color: rgba(245,240,232,0.35);
+    letter-spacing: 0.1em; font-weight: 300;
+  }
+  footer p { font-size: 0.7rem; color: rgba(245,240,232,0.2); letter-spacing: 0.06em; max-width: none; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 960px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-left { padding: 120px 24px 40px; }
+    .hero-right { padding: 0 24px 40px; }
+    .hero-meta-strip { padding: 24px; gap: 24px; }
+    .section { padding: 80px 24px; }
+    .audit-grid { grid-template-columns: 1fr; }
+    .sbs-intro, .outcomes-compare, .figma-cols { grid-template-columns: 1fr; }
+    .fix-grid { grid-template-columns: 1fr; }
+    .sbs-row { grid-template-columns: 1fr; }
+    .arc { flex-direction: column; }
+    .arc-arrow { display: none; }
+    footer { padding: 36px 24px; flex-direction: column; align-items: flex-start; }
+    .pull-quote { padding: 52px 28px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+
+<nav>
+  <a class="nav-logo" href="#">Chasing Robins Media</a>
+  <ul class="nav-links">
+    <li><a href="#audit">Audit</a></li>
+    <li><a href="#sbs">Comparison</a></li>
+    <li><a href="#fix">What I'd Fix</a></li>
+    <li><a href="#narrative">The Story</a></li>
+    <li><a href="#figma">Figma Plan</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+
+  <div class="hero-left">
+    <div class="hero-eyebrow">UX Audit + Competitive Analysis · Case Study</div>
+    <h1 class="hero-title">
+      <span class="hb">HoneyBook</span><br>
+      <span class="crossed">works</span><br>
+      <em>for admins.</em>
+    </h1>
+    <p class="hero-sub">I tested HoneyBook as a working wedding photographer. I found a tool built entirely around the business owner's back office — and almost entirely blind to the experience of the client sitting on the other side. So I designed something better.</p>
+    <div class="hero-tags">
+      <span class="tag gold">UX Audit</span>
+      <span class="tag hb">HoneyBook</span>
+      <span class="tag gold">Competitive Analysis</span>
+      <span class="tag">Figma Redesign</span>
+    </div>
+    <div class="hero-verdict">
+      "HoneyBook is a CRM dressed up as a client experience. The difference matters — and most photographers don't notice until they've lost a couple to a competitor who does."
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="score-card">
+      <div class="score-card-title">HoneyBook UX Scorecard — Photographer's Audit</div>
+
+      <div class="score-row">
+        <div class="score-label">Admin workflow</div>
+        <div class="score-bar-wrap"><div class="score-bar green" style="width:0%" data-w="82%"></div></div>
+        <div class="score-num green">8.2</div>
+      </div>
+      <div class="score-row">
+        <div class="score-label">Client-side experience</div>
+        <div class="score-bar-wrap"><div class="score-bar red" style="width:0%" data-w="28%"></div></div>
+        <div class="score-num red">2.8</div>
+      </div>
+      <div class="score-row">
+        <div class="score-label">Customisation & branding</div>
+        <div class="score-bar-wrap"><div class="score-bar red" style="width:0%" data-w="24%"></div></div>
+        <div class="score-num red">2.4</div>
+      </div>
+      <div class="score-row">
+        <div class="score-label">Onboarding & setup</div>
+        <div class="score-bar-wrap"><div class="score-bar orange" style="width:0%" data-w="35%"></div></div>
+        <div class="score-num orange">3.5</div>
+      </div>
+      <div class="score-row">
+        <div class="score-label">Email deliverability</div>
+        <div class="score-bar-wrap"><div class="score-bar red" style="width:0%" data-w="30%"></div></div>
+        <div class="score-num red">3.0</div>
+      </div>
+      <div class="score-row">
+        <div class="score-label">Mobile experience</div>
+        <div class="score-bar-wrap"><div class="score-bar orange" style="width:0%" data-w="42%"></div></div>
+        <div class="score-num orange">4.2</div>
+      </div>
+      <div class="score-row">
+        <div class="score-label">Value for price</div>
+        <div class="score-bar-wrap"><div class="score-bar orange" style="width:0%" data-w="38%"></div></div>
+        <div class="score-num orange">3.8</div>
+      </div>
+      <div class="score-row">
+        <div class="score-label">Process flexibility</div>
+        <div class="score-bar-wrap"><div class="score-bar red" style="width:0%" data-w="25%"></div></div>
+        <div class="score-num red">2.5</div>
+      </div>
+
+      <div class="score-total">
+        <div>
+          <div class="score-total-label">Overall UX Score</div>
+          <div class="score-total-sub" style="color:rgba(245,240,232,0.25);">for wedding photography businesses</div>
+        </div>
+        <div style="text-align: right;">
+          <div class="score-total-num">4.3</div>
+          <div class="score-total-sub">out of 10</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-meta-strip">
+    <div class="hm"><label>Product audited</label><span>HoneyBook (2023–2024)</span></div>
+    <div class="hm"><label>My role</label><span>User, Evaluator & Competing Designer</span></div>
+    <div class="hm"><label>Cost tested</label><span>$30–$90/month depending on plan</span></div>
+    <div class="hm"><label>Research method</label><span>Lived use + peer photographer interviews</span></div>
+    <div class="hm"><label>Outcome</label><span>Built the Chasing Robins Client Portal instead</span></div>
+  </div>
+</section>
+
+<!-- AUDIT -->
+<section class="section" id="audit">
+  <div class="container">
+    <div class="label r">01 — UX Audit Findings</div>
+    <h2 class="r d1">Nine problems.<br><em>One root cause.</em></h2>
+    <p class="body r d2">HoneyBook is built for the photographer's operations dashboard — and almost every UX problem flows from the same design assumption: that the client's experience is secondary. These aren't edge cases. They're the daily reality of every photographer who uses it.</p>
+
+    <div class="audit-grid r d3">
+
+      <div class="audit-card ac-critical">
+        <div class="audit-sev"><div class="sev-dot"></div><span class="sev-text">Critical</span></div>
+        <h3>No enforced process order</h3>
+        <p>Clients can pay before signing a contract. They can skip questionnaires entirely. HoneyBook puts tasks in front of clients with no guardrails — the business owner has to manually manage sequencing. This is a fundamental IA failure for any service business with legal and financial dependencies.</p>
+        <div class="audit-impact">Impact: Photographers risk taking payment without a signed contract — a legal and financial exposure HoneyBook's UI actively enables.</div>
+      </div>
+
+      <div class="audit-card ac-critical">
+        <div class="audit-sev"><div class="sev-dot"></div><span class="sev-text">Critical</span></div>
+        <h3>Emails land in spam</h3>
+        <p>HoneyBook sends automated emails from shared infrastructure. Because many users send bulk communications through the same sending domain, the domain reputation suffers. Couples routinely miss contracts, payment requests, and appointment reminders because HoneyBook's emails go directly to their spam folder.</p>
+        <div class="audit-impact">Impact: The entire client communication model — the product's core value — becomes unreliable. Photographers end up calling or texting to chase their own tool's emails.</div>
+      </div>
+
+      <div class="audit-card ac-critical">
+        <div class="audit-sev"><div class="sev-dot"></div><span class="sev-text">Critical</span></div>
+        <h3>Zero brand customisation</h3>
+        <p>The HoneyBook client-facing interface is HoneyBook's brand, not yours. You can add a logo and change an accent colour. Everything else — the fonts, the layout, the email templates, the portal structure — is locked. For a premium wedding photographer, handing clients a generic CRM portal is a brand contradiction.</p>
+        <div class="audit-impact">Impact: The tool actively undermines the premium positioning photographers spend thousands building. Clients notice the inconsistency even when they can't name it.</div>
+      </div>
+
+      <div class="audit-card ac-major">
+        <div class="audit-sev"><div class="sev-dot"></div><span class="sev-text">Major</span></div>
+        <h3>Months to set up properly</h3>
+        <p>Templates, workflows, automations, pipelines, and smart fields all require extensive configuration before HoneyBook delivers its value. The onboarding documentation exists, but the learning curve is steep enough that most photographers use a fraction of what they're paying for — often for months.</p>
+        <div class="audit-impact">Impact: Expensive from day one, useful much later. The ROI window is long, and many photographers abandon the tool before reaching it.</div>
+      </div>
+
+      <div class="audit-card ac-major">
+        <div class="audit-sev"><div class="sev-dot"></div><span class="sev-text">Major</span></div>
+        <h3>Too many steps for clients</h3>
+        <p>The client-facing portal requires couples to navigate multiple separate pages — contracts, invoices, questionnaires, scheduling — each accessed via separate links or tabs with no unified journey. There's no "here's where you are" orientation. Couples frequently call photographers to ask what they're supposed to do next.</p>
+        <div class="audit-impact">Impact: The photographer has to onboard their clients into a third-party tool — adding friction to a relationship that should feel effortless from the couple's side.</div>
+      </div>
+
+      <div class="audit-card ac-major">
+        <div class="audit-sev"><div class="sev-dot"></div><span class="sev-text">Major</span></div>
+        <h3>Integrations constantly break</h3>
+        <p>HoneyBook's third-party integrations — calendar sync, payment processors, email clients — are persistently unreliable. Integration failures require manual intervention and generate no meaningful error messaging. Photographers discover broken integrations when a client's payment fails, not before.</p>
+        <div class="audit-impact">Impact: Trust breaks at the worst possible moment — during financial transactions. A broken Stripe integration during retainer collection is an unacceptable failure mode.</div>
+      </div>
+
+      <div class="audit-card ac-friction">
+        <div class="audit-sev"><div class="sev-dot"></div><span class="sev-text">Friction</span></div>
+        <h3>Adapts to HoneyBook, not you</h3>
+        <p>HoneyBook's pipeline and workflow system is built around generic freelance project stages. Wedding photography has a specific, non-negotiable sequence — booking, contract, retainer, questionnaire, planning call, wedding day, gallery delivery. Forcing that into HoneyBook's generic "pipeline" requires awkward workarounds that still don't feel right.</p>
+        <div class="audit-impact">Impact: Every workflow decision is a compromise. The tool is never quite right for the job it's being asked to do.</div>
+      </div>
+
+      <div class="audit-card ac-friction">
+        <div class="audit-sev"><div class="sev-dot"></div><span class="sev-text">Friction</span></div>
+        <h3>$30–90/month for partial fit</h3>
+        <p>HoneyBook's pricing tiers lock key features — automation, multiple pipelines, scheduling — behind higher plans. Small wedding businesses often end up on the expensive tier to access what they actually need, paying a premium for a tool that still requires workarounds. For a solo photographer, that cost compounds quickly across a year.</p>
+        <div class="audit-impact">Impact: Paying $1,080/year for a tool you've adapted around — rather than a tool that adapts to you — is a poor return on investment.</div>
+      </div>
+
+      <div class="audit-card ac-friction">
+        <div class="audit-sev"><div class="sev-dot"></div><span class="sev-text">Friction</span></div>
+        <h3>No sense of client journey</h3>
+        <p>From the client's perspective, there is no visible progression through the wedding photography process. HoneyBook shows tasks and documents, but nothing that says "you're here, this is next, this is what's coming." For couples who are often anxious about the details of their wedding planning, this absence creates unnecessary uncertainty.</p>
+        <div class="audit-impact">Impact: Clients feel managed, not taken care of. The emotional job of a client portal — creating confidence and excitement — is entirely unaddressed.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PULL QUOTE -->
+<div class="pull-quote">
+  <blockquote>
+    "HoneyBook is a CRM that photographers use. What I needed was a client portal that couples would love. Those are two completely different products."
+    <cite>— The design insight that started the Chasing Robins Client Portal</cite>
+  </blockquote>
+</div>
+
+<!-- SIDE BY SIDE -->
+<section class="section section-warm" id="sbs">
+  <div class="container">
+    <div class="label r">02 — Head to Head</div>
+    <h2 class="r d1">HoneyBook vs.<br><em>what I built instead.</em></h2>
+    <p class="body r d2">This isn't a feature checklist comparison. It's a design philosophy comparison. Every row below shows a different answer to the same underlying question: who is this product actually for?</p>
+  </div>
+
+  <div style="max-width: 1160px; margin: 52px auto 0; padding: 0 52px;">
+
+    <div class="sbs-intro r">
+      <div class="sbs-header sbs-hb">
+        <span class="sbs-badge badge-hb">HoneyBook</span>
+        <h3>Photographer's CRM</h3>
+      </div>
+      <div class="sbs-header sbs-crm">
+        <span class="sbs-badge badge-crm">CRM Client Portal</span>
+        <h3 style="color:var(--cream);">Couple's Experience</h3>
+      </div>
+    </div>
+
+    <div class="sbs-row r d1">
+      <div class="sbs-cell sbs-cell-hb">
+        <div class="sbs-topic">Process control</div>
+        <p>No enforced sequencing. Clients can pay before signing. Photographers manually police the order of operations, chasing signatures and retainers across multiple steps with no guardrails in the UI.</p>
+        <div class="sbs-verdict">You adapt your business process to HoneyBook's structure — or abandon the structure entirely.</div>
+      </div>
+      <div class="sbs-cell sbs-cell-crm">
+        <div class="sbs-topic">Process control</div>
+        <p>Role-based, enforced workflow. Contract must be signed before payment unlocks. Questionnaire opens after retainer is confirmed. Every step is gated by the previous one — automatically, by design.</p>
+        <div class="sbs-verdict">The portal enforces the process so you never have to. The business logic is built into the UX.</div>
+      </div>
+    </div>
+
+    <div class="sbs-row r d1">
+      <div class="sbs-cell sbs-cell-hb">
+        <div class="sbs-topic">Client-side experience</div>
+        <p>Clients receive separate links for contracts, invoices, and questionnaires. No unified space. No sense of journey. No indication of what comes next. The portal exists to collect things from clients, not to serve them.</p>
+        <div class="sbs-verdict">Couples feel like they're filling out paperwork, not preparing for the best day of their lives.</div>
+      </div>
+      <div class="sbs-cell sbs-cell-crm">
+        <div class="sbs-topic">Client-side experience</div>
+        <p>Every couple gets their own branded portal with a countdown to their wedding day, a visual journey tracker, and all tasks in one place. The portal is designed to make them feel excited and taken care of — not processed.</p>
+        <div class="sbs-verdict">Couples consistently reference the portal as a reason they trust their photographer before the wedding day arrives.</div>
+      </div>
+    </div>
+
+    <div class="sbs-row r d2">
+      <div class="sbs-cell sbs-cell-hb">
+        <div class="sbs-topic">Brand & customisation</div>
+        <p>Logo upload and one accent colour. Every other element — fonts, layout, template structure, email design — is HoneyBook's. The client-facing experience carries HoneyBook's brand identity, not yours.</p>
+        <div class="sbs-verdict">Premium photographers paying thousands to build a brand hand their clients a generic SaaS portal.</div>
+      </div>
+      <div class="sbs-cell sbs-cell-crm">
+        <div class="sbs-topic">Brand & customisation</div>
+        <p>Every pixel is custom. Forest green, cream, gold. Cormorant Garamond and DM Sans. The portal is an extension of the Chasing Robins brand — from the login screen to gallery delivery. No third-party branding anywhere.</p>
+        <div class="sbs-verdict">The portal is the first chapter of the brand story couples experience. It sets expectations that carry through to the wedding day.</div>
+      </div>
+    </div>
+
+    <div class="sbs-row r d2">
+      <div class="sbs-cell sbs-cell-hb">
+        <div class="sbs-topic">Email reliability</div>
+        <p>Automated emails sent from shared HoneyBook infrastructure routinely land in spam folders. Contracts go unsigned. Payment reminders go unseen. Photographers discover the problem when deadlines are missed.</p>
+        <div class="sbs-verdict">The core communication feature of the product is structurally unreliable.</div>
+      </div>
+      <div class="sbs-cell sbs-cell-crm">
+        <div class="sbs-topic">Communication</div>
+        <p>Real-time in-portal messaging via Supabase. No external email dependency for client communication. All messages are in-context, searchable, and persistent per couple. Notifications are instant and reliable.</p>
+        <div class="sbs-verdict">Communication lives inside the portal — no spam risk, full context, one thread per couple.</div>
+      </div>
+    </div>
+
+    <div class="sbs-row r d3">
+      <div class="sbs-cell sbs-cell-hb">
+        <div class="sbs-topic">Setup & onboarding</div>
+        <p>Months of configuration. Templates, workflows, pipelines, automations, smart fields — all require setup before the product delivers value. Most photographers use a fraction of what they pay for, often indefinitely.</p>
+        <div class="sbs-verdict">You pay from day one. The product works months later.</div>
+      </div>
+      <div class="sbs-cell sbs-cell-crm">
+        <div class="sbs-topic">Setup & onboarding</div>
+        <p>New couple onboarding takes under three minutes — create portal, set their wedding date, send invite. Every workflow is pre-configured for the wedding photography process. Nothing to configure; everything already works the way the job requires.</p>
+        <div class="sbs-verdict">Built around one business type, done correctly, from day one.</div>
+      </div>
+    </div>
+
+    <div class="sbs-row r d3">
+      <div class="sbs-cell sbs-cell-hb">
+        <div class="sbs-topic">Cost</div>
+        <p>$30–$90/month ($360–$1,080/year) for a tool that requires workarounds, delivers partial fit, and charges more to access features most wedding photographers actually need.</p>
+        <div class="sbs-verdict">High recurring cost for a tool you've adapted around rather than one that adapts to you.</div>
+      </div>
+      <div class="sbs-cell sbs-cell-crm">
+        <div class="sbs-topic">Cost</div>
+        <p>Built once. Hosting via Vercel (free tier). Supabase (free tier for the scale of a solo photographer). Stripe fees are per-transaction — no monthly overhead. The capital cost was time and skill; the running cost is near zero.</p>
+        <div class="sbs-verdict">A one-time design and build investment that costs nothing to run and owns the full experience.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- WHAT I'D FIX -->
+<section class="section section-dark" id="fix">
+  <div class="container">
+    <div class="label light r">03 — What I'd Fix in HoneyBook</div>
+    <h2 class="light r d1">If I were on<br>their <em>design team.</em></h2>
+    <p class="light r d2">Building my own solution doesn't mean HoneyBook is unsalvageable. These are the four highest-impact changes I'd prioritise if I were a designer at HoneyBook — the interventions that would close the gap between admin tool and client experience.</p>
+
+    <div class="fix-grid r d3">
+
+      <div class="fix-card">
+        <div class="fix-label">Priority 01 — Critical</div>
+        <h3>Enforce a client journey</h3>
+        <p>Replace the flat task list with a visual, sequential journey that gates each step behind the previous one. Couples should never see "Pay retainer" before they've signed. This is a single IA change with enormous downstream impact on both the client experience and the photographer's peace of mind.</p>
+        <div class="fix-screens">
+          <div class="fix-screen">Redesign the client home screen around a visual progress tracker</div>
+          <div class="fix-screen">Add step-locking logic: payment unlocks post-signature only</div>
+          <div class="fix-screen">Show "what's next" at every completed step</div>
+        </div>
+      </div>
+
+      <div class="fix-card">
+        <div class="fix-label">Priority 02 — Critical</div>
+        <h3>Fix the email infrastructure</h3>
+        <p>Move to a dedicated sending domain per account, or give photographers the ability to connect their own sending domain via DKIM/SPF records. A CRM whose emails land in spam is a CRM that doesn't work. This is a trust-breaking failure that no UI redesign can paper over.</p>
+        <div class="fix-screens">
+          <div class="fix-screen">Allow custom sending domain connection in account settings</div>
+          <div class="fix-screen">Add email deliverability health indicator in the dashboard</div>
+          <div class="fix-screen">Default to in-portal notifications with email as fallback</div>
+        </div>
+      </div>
+
+      <div class="fix-card">
+        <div class="fix-label">Priority 03 — Major</div>
+        <h3>Deep brand customisation</h3>
+        <p>Open up full font selection (at minimum, serif vs sans-serif pairing), background colour choices for the client portal, and the ability to suppress HoneyBook branding entirely on paid plans. The client-facing portal should be an extension of the photographer's brand — not a white-labelled generic SaaS interface.</p>
+        <div class="fix-screens">
+          <div class="fix-screen">Font pairing selector: display font + body font</div>
+          <div class="fix-screen">Full colour system: background, surface, accent, text</div>
+          <div class="fix-screen">White-label mode: remove all HoneyBook branding on Pro tier</div>
+        </div>
+      </div>
+
+      <div class="fix-card">
+        <div class="fix-label">Priority 04 — Major</div>
+        <h3>Industry-specific templates</h3>
+        <p>HoneyBook serves wedding photographers, event planners, interior designers, and brand designers — all with different workflows. Rather than forcing everyone into a generic pipeline model, offer industry-specific setup paths that pre-configure the pipeline, templates, and automation to match how that business actually works.</p>
+        <div class="fix-screens">
+          <div class="fix-screen">Onboarding: "What kind of business are you?" → tailored setup</div>
+          <div class="fix-screen">Pre-built pipeline for wedding photography: 7-stage sequence</div>
+          <div class="fix-screen">Industry-specific questionnaire and contract templates included</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- NARRATIVE ARC -->
+<section class="section section-warm" id="narrative">
+  <div class="container">
+    <div class="label r">04 — The Case Study Narrative</div>
+    <h2 class="r d1">How to tell<br>this story in<br><em>your portfolio.</em></h2>
+    <p class="body r d2">This project has a three-act structure that's rare in most portfolios. Use it. The arc moves from lived experience through critical analysis to designed solution — that's a complete designer's story.</p>
+
+    <div class="arc r d3">
+      <div class="arc-step">
+        <div class="arc-arrow">→</div>
+        <div class="arc-num">01</div>
+        <div class="arc-tag">Act One</div>
+        <h3>The Frustration</h3>
+        <p>I used HoneyBook as a working photographer. I paid for it. I watched clients get confused by it. I found its limits before its strengths. This is the most credible kind of user research — lived experience with real stakes.</p>
+      </div>
+      <div class="arc-step">
+        <div class="arc-arrow">→</div>
+        <div class="arc-num">02</div>
+        <div class="arc-tag">Act Two</div>
+        <h3>The Audit</h3>
+        <p>I turned my frustrations into a structured UX critique — nine specific, evidenced problems, each mapped to user impact. This is where personal experience becomes professional analysis. The scorecard shows I can evaluate a product critically and communicate findings clearly.</p>
+      </div>
+      <div class="arc-step">
+        <div class="arc-arrow">→</div>
+        <div class="arc-num">03</div>
+        <div class="arc-tag">Act Three</div>
+        <h3>The Solution</h3>
+        <p>Rather than redesigning HoneyBook, I built the product I wished existed. The Chasing Robins Client Portal is the direct answer to every problem in the audit. This proves I can move from diagnosis to execution — and ship something real.</p>
+      </div>
+      <div class="arc-step">
+        <div class="arc-num">04</div>
+        <div class="arc-tag">Bonus Layer</div>
+        <h3>The Figma Redesign</h3>
+        <p>Two to three redesigned HoneyBook screens show I can work within an existing design system and propose targeted improvements — not just build my own thing from scratch. This answers the "can you work on an existing product?" question before it's asked.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OUTCOMES COMPARE -->
+<section class="section" id="outcomes">
+  <div class="container">
+    <div class="label r">05 — Outcomes</div>
+    <h2 class="r d1">What changed<br><em>when I stopped</em><br>adapting.</h2>
+    <div class="outcomes-compare r d2">
+      <div class="oc-side oc-hb">
+        <h3>With HoneyBook</h3>
+        <ul class="oc-items">
+          <li><span class="oc-icon">✕</span> Clients confused about next steps after receiving links</li>
+          <li><span class="oc-icon">✕</span> Contract emails landing in spam — chasing signatures manually</li>
+          <li><span class="oc-icon">✕</span> No enforced process order — payment before contract possible</li>
+          <li><span class="oc-icon">✕</span> Generic interface — no brand continuity from website to portal</li>
+          <li><span class="oc-icon">✕</span> Months to set up; still required workarounds after</li>
+          <li><span class="oc-icon">✕</span> $30–90/month recurring cost for partial-fit tool</li>
+          <li><span class="oc-icon">✕</span> Integrations breaking at the worst possible moments</li>
+        </ul>
+      </div>
+      <div class="oc-side oc-crm">
+        <h3>With the Client Portal</h3>
+        <ul class="oc-items">
+          <li><span class="oc-icon">✦</span> Couples know exactly where they are and what comes next</li>
+          <li><span class="oc-icon">✦</span> In-portal messaging — no email deliverability risk</li>
+          <li><span class="oc-icon">✦</span> Locked workflow — contract first, then payment, always</li>
+          <li><span class="oc-icon">✦</span> Fully branded portal — forest green, cream, gold throughout</li>
+          <li><span class="oc-icon">✦</span> New couple onboarding in under 3 minutes</li>
+          <li><span class="oc-icon">✦</span> Near-zero running cost on Vercel + Supabase free tiers</li>
+          <li><span class="oc-icon">✦</span> Zero integration failures — everything built in-house</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FIGMA PLAN -->
+<section class="section section-warm" id="figma">
+  <div class="container">
+    <div class="label r">06 — Your Figma Work Plan</div>
+    <h2 class="r d1">What to build<br>in <em>Figma.</em></h2>
+    <p class="body r d2">You don't need to redesign all of HoneyBook. You need two or three screens that show targeted, reasoned improvements. Here's exactly what to build and how to present it.</p>
+
+    <div class="figma-cols r d3">
+      <div class="figma-col">
+        <h3>Screen 1 — Client portal home</h3>
+        <ul class="check-list">
+          <li><span class="ck">→</span> Add a visual journey tracker at the top showing all 7 stages</li>
+          <li><span class="ck">→</span> Show a countdown to the wedding date as the emotional anchor</li>
+          <li><span class="ck">→</span> Lock inaccessible steps visually — greyed out with a padlock</li>
+          <li><span class="ck">→</span> Add a "what's next" prompt card highlighting the active task</li>
+          <li><span class="ck">→</span> Show the photographer's face and a personal welcome note</li>
+          <li><span class="ck">→</span> Annotate: "This replaces the flat task list with an emotional journey"</li>
+        </ul>
+      </div>
+      <div class="figma-col dark">
+        <h3>Screen 2 — Contract + payment flow</h3>
+        <ul class="check-list">
+          <li><span class="ck">→</span> Show contract step with a clear "Sign to unlock payment" message</li>
+          <li><span class="ck">→</span> Payment CTA is greyed out and non-interactive before signing</li>
+          <li><span class="ck">→</span> After signature: payment step animates to active state</li>
+          <li><span class="ck">→</span> Progress indicator shows "Step 2 of 2 — You're almost there"</li>
+          <li><span class="ck">→</span> Annotate: "Enforced sequencing removes a legal and trust risk"</li>
+          <li><span class="ck">→</span> Prototype the unlock interaction in Figma — make it feel satisfying</li>
+        </ul>
+      </div>
+      <div class="figma-col">
+        <h3>Screen 3 — Branding system</h3>
+        <ul class="check-list">
+          <li><span class="ck">→</span> Show a "Brand settings" page with full font + colour control</li>
+          <li><span class="ck">→</span> Live preview panel: changes update the portal preview in real time</li>
+          <li><span class="ck">→</span> Offer 3 preset brand palettes + custom option</li>
+          <li><span class="ck">→</span> Font pairing selector: serif display + sans body (Google Fonts)</li>
+          <li><span class="ck">→</span> White-label toggle: "Remove HoneyBook branding" on Pro plan</li>
+          <li><span class="ck">→</span> Annotate: "Brand consistency is the feature premium clients are paying for"</li>
+        </ul>
+      </div>
+      <div class="figma-col dark">
+        <h3>How to present in your case study</h3>
+        <ul class="check-list">
+          <li><span class="ck">→</span> Lead with a side-by-side: current HoneyBook screenshot vs your redesign</li>
+          <li><span class="ck">→</span> Annotate every design decision with a "why" — not just "what"</li>
+          <li><span class="ck">→</span> Link the Figma redesign directly to the audit findings above it</li>
+          <li><span class="ck">→</span> Include the Chasing Robins portal as the "live version" of these ideas</li>
+          <li><span class="ck">→</span> End with: "I didn't just critique HoneyBook — I shipped the alternative"</li>
+          <li><span class="ck">→</span> Keep the prototype to 3 screens max — depth over breadth</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="footer-logo">Chasing Robins Media</span>
+  <p>HoneyBook UX Audit · Competitive Analysis · [Your Name] · UX/UI Designer</p>
+</footer>
+
+<script>
+  window.addEventListener('scroll', () => {
+    const d = document.documentElement;
+    document.getElementById('prog').style.width =
+      (d.scrollTop / (d.scrollHeight - d.clientHeight) * 100) + '%';
+  });
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('v'); });
+  }, { threshold: 0.1, rootMargin: '0px 0px -32px 0px' });
+  document.querySelectorAll('.r').forEach(el => obs.observe(el));
+
+  // Animate score bars on load
+  setTimeout(() => {
+    document.querySelectorAll('.score-bar').forEach(bar => {
+      bar.style.width = bar.dataset.w;
+    });
+  }, 1200);
+</script>
+</body>
+</html>

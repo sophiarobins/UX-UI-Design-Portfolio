@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sophia Robins — UX/UI Designer & Developer</title>
+<meta name="description" content="UX/UI Designer & Developer who designs and builds — from brand identity to full-stack web applications. Based in the Pacific Northwest.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --forest:      #2C4A3E;
+    --forest-deep: #1a2e27;
+    --forest-mid:  #3d6357;
+    --cream:       #F5F0E8;
+    --cream-warm:  #EDE7D7;
+    --cream-dark:  #E4DDD0;
+    --gold:        #C9A84C;
+    --gold-light:  #E2C27A;
+    --charcoal:    #2A2A2A;
+    --muted:       #7A7A72;
+    --border:      rgba(201,168,76,0.22);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--charcoal);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* ── CUSTOM CURSOR ── */
+  .cursor {
+    position: fixed; top: 0; left: 0;
+    width: 10px; height: 10px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s ease, width 0.3s ease, height 0.3s ease, background 0.3s ease;
+  }
+  .cursor-ring {
+    position: fixed; top: 0; left: 0;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(201,168,76,0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.18s ease, width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+  }
+  body:has(a:hover) .cursor,
+  body:has(button:hover) .cursor { width: 16px; height: 16px; background: var(--forest); }
+  body:has(a:hover) .cursor-ring,
+  body:has(button:hover) .cursor-ring { width: 52px; height: 52px; opacity: 0.6; }
+
+  /* ── PROGRESS ── */
+  #prog {
+    position: fixed; top: 0; left: 0;
+    height: 2px; width: 0%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    z-index: 1000; transition: width 0.08s linear;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    padding: 20px 52px;
+    display: flex; justify-content: space-between; align-items: center;
+    backdrop-filter: blur(16px);
+    background: rgba(245,240,232,0.88);
+    border-bottom: 1px solid rgba(201,168,76,0.12);
+    transition: padding 0.3s;
+  }
+  nav.scrolled { padding: 14px 52px; }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem; font-weight: 500;
+    letter-spacing: 0.08em; color: var(--forest);
+    text-decoration: none;
+  }
+  .nav-name {
+    font-style: italic; color: var(--gold);
+  }
+  .nav-links { display: flex; gap: 32px; list-style: none; align-items: center; }
+  .nav-links a {
+    font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); text-decoration: none; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--forest); }
+  .nav-cta {
+    padding: 9px 20px;
+    border: 1px solid var(--gold);
+    color: var(--gold) !important;
+    transition: background 0.2s, color 0.2s !important;
+  }
+  .nav-cta:hover {
+    background: var(--gold) !important;
+    color: var(--forest-deep) !important;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    background: var(--forest-deep);
+    display: flex; flex-direction: column;
+    justify-content: center;
+    padding: 120px 52px 80px;
+    position: relative; overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 80% 60% at 75% 25%, rgba(201,168,76,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 70% at 5% 85%, rgba(61,99,87,0.45) 0%, transparent 55%);
+  }
+
+  .hero-lines {
+    position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+  }
+  .hero-lines::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 120px; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, rgba(201,168,76,0.08) 30%, rgba(201,168,76,0.08) 70%, transparent);
+  }
+  .hero-lines::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 280px; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, rgba(201,168,76,0.04) 30%, rgba(201,168,76,0.04) 70%, transparent);
+  }
+
+  .hero-content { position: relative; max-width: 1100px; }
+
+  .hero-eyebrow {
+    font-size: 0.65rem; letter-spacing: 0.24em; text-transform: uppercase;
+    color: var(--gold); display: flex; align-items: center; gap: 14px;
+    margin-bottom: 32px;
+    opacity: 0; animation: fadeUp 0.8s ease 0.15s forwards;
+  }
+  .hero-eyebrow::before {
+    content: ''; width: 36px; height: 1px;
+    background: var(--gold); opacity: 0.6; display: block;
+  }
+
+  .hero-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(4rem, 9vw, 10rem);
+    font-weight: 300; line-height: 0.92; color: var(--cream);
+    letter-spacing: -0.01em;
+    opacity: 0; animation: fadeUp 1s ease 0.3s forwards;
+  }
+  .hero-name .first { display: block; }
+  .hero-name .last  {
+    display: block; font-style: italic;
+    color: var(--gold-light); padding-left: 0.12em;
+  }
+
+  .hero-title-row {
+    display: flex; align-items: center; gap: 24px;
+    margin-top: 36px;
+    opacity: 0; animation: fadeUp 0.9s ease 0.5s forwards;
+  }
+  .hero-title-text {
+    font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: rgba(245,240,232,0.45);
+  }
+  .hero-title-line {
+    flex: 1; height: 1px; max-width: 200px;
+    background: linear-gradient(to right, rgba(201,168,76,0.3), transparent);
+  }
+
+  .hero-bio {
+    font-size: 1.1rem; line-height: 1.8;
+    color: rgba(245,240,232,0.62); max-width: 560px;
+    margin-top: 28px;
+    opacity: 0; animation: fadeUp 0.9s ease 0.65s forwards;
+  }
+  .hero-bio strong { color: var(--gold-light); font-weight: 400; }
+
+  .hero-actions {
+    display: flex; align-items: center; gap: 28px;
+    margin-top: 52px;
+    opacity: 0; animation: fadeUp 0.9s ease 0.8s forwards;
+  }
+  .btn-primary {
+    display: inline-block; padding: 14px 32px;
+    background: var(--gold); color: var(--forest-deep);
+    font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase;
+    font-weight: 500; text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
+  .btn-ghost {
+    font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: rgba(245,240,232,0.45); text-decoration: none;
+    display: flex; align-items: center; gap: 8px;
+    transition: color 0.2s;
+  }
+  .btn-ghost:hover { color: var(--gold-light); }
+  .btn-ghost::after { content: '↓'; font-size: 0.85rem; }
+
+  .hero-stats {
+    display: flex; gap: 48px; flex-wrap: wrap;
+    margin-top: 80px; padding-top: 40px;
+    border-top: 1px solid rgba(201,168,76,0.12);
+    opacity: 0; animation: fadeUp 0.9s ease 0.95s forwards;
+  }
+  .hero-stat label {
+    display: block; font-size: 0.58rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--gold); opacity: 0.6; margin-bottom: 5px;
+  }
+  .hero-stat span { font-size: 0.82rem; color: rgba(245,240,232,0.55); }
+
+  /* ── WORK ── */
+  .work-section { padding: 120px 52px; }
+
+  .section-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 64px; max-width: 1160px; margin-left: auto; margin-right: auto;
+  }
+  .label {
+    font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--gold); display: flex; align-items: center; gap: 12px;
+    margin-bottom: 16px;
+  }
+  .label::before {
+    content: ''; width: 24px; height: 1px;
+    background: var(--gold); opacity: 0.7; display: block;
+  }
+  h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 3.5vw, 3.4rem);
+    font-weight: 400; line-height: 1.1; color: var(--forest-deep);
+  }
+  h2 em { font-style: italic; color: var(--forest-mid); }
+
+  .view-all {
+    font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); text-decoration: none;
+    display: flex; align-items: center; gap: 8px;
+    transition: color 0.2s; white-space: nowrap; margin-bottom: 8px;
+  }
+  .view-all:hover { color: var(--forest); }
+  .view-all::after { content: '→'; }
+
+  /* ── CASE STUDY CARDS ── */
+  .cases { max-width: 1160px; margin: 0 auto; display: flex; flex-direction: column; gap: 2px; }
+
+  .case-card {
+    display: grid; grid-template-columns: 1fr 1.6fr;
+    background: var(--cream-warm);
+    text-decoration: none; color: inherit;
+    position: relative; overflow: hidden;
+    transition: background 0.3s;
+    border: 1px solid transparent;
+  }
+  .case-card:hover { background: white; border-color: var(--border); }
+
+  .case-card::after {
+    content: ''; position: absolute;
+    left: 0; bottom: 0; top: 0;
+    width: 3px;
+    background: var(--gold);
+    transform: scaleY(0); transform-origin: bottom;
+    transition: transform 0.4s cubic-bezier(0.23,1,0.32,1);
+  }
+  .case-card:hover::after { transform: scaleY(1); }
+
+  .case-visual {
+    position: relative; overflow: hidden;
+    min-height: 280px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .case-visual-bg {
+    position: absolute; inset: 0;
+    transition: transform 0.6s cubic-bezier(0.23,1,0.32,1);
+  }
+  .case-card:hover .case-visual-bg { transform: scale(1.04); }
+
+  .cv-portal  { background: linear-gradient(135deg, var(--forest-deep) 0%, var(--forest) 100%); }
+  .cv-website { background: linear-gradient(135deg, #2a3828 0%, var(--forest-mid) 100%); }
+  .cv-audit   { background: linear-gradient(135deg, #2a1f1a 0%, #6b3020 100%); }
+
+  .case-visual-pattern {
+    position: absolute; inset: 0; opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23C9A84C' fill-opacity='1'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z'/%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  .case-visual-content {
+    position: relative; z-index: 1;
+    text-align: center; padding: 40px;
+  }
+  .case-icon {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 5rem; font-weight: 300; line-height: 1;
+    color: rgba(201,168,76,0.25);
+    display: block; margin-bottom: 8px;
+    transition: color 0.3s, transform 0.4s;
+  }
+  .case-card:hover .case-icon {
+    color: rgba(201,168,76,0.5);
+    transform: scale(1.05);
+  }
+  .case-visual-label {
+    font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: rgba(201,168,76,0.5);
+  }
+
+  .case-content { padding: 52px 48px; display: flex; flex-direction: column; justify-content: center; }
+
+  .case-tags {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;
+  }
+  .case-tag {
+    font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 5px 11px; border: 1px solid var(--border); color: var(--gold);
+  }
+
+  .case-content h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.6rem, 2.5vw, 2.4rem);
+    font-weight: 400; line-height: 1.15;
+    color: var(--forest-deep); margin-bottom: 16px;
+  }
+  .case-content h3 em { font-style: italic; color: var(--forest-mid); }
+
+  .case-content p {
+    font-size: 0.92rem; line-height: 1.8; color: #555; max-width: 480px;
+  }
+
+  .case-meta {
+    display: flex; gap: 32px; margin-top: 32px; flex-wrap: wrap;
+  }
+  .cm-item label {
+    display: block; font-size: 0.58rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--gold); opacity: 0.7; margin-bottom: 4px;
+  }
+  .cm-item span { font-size: 0.8rem; color: var(--muted); }
+
+  .case-cta {
+    display: inline-flex; align-items: center; gap: 10px;
+    margin-top: 32px; font-size: 0.68rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--forest);
+    transition: gap 0.2s;
+  }
+  .case-card:hover .case-cta { gap: 16px; }
+  .case-cta::after {
+    content: '→'; font-size: 0.85rem; color: var(--gold);
+    transition: transform 0.2s;
+  }
+  .case-card:hover .case-cta::after { transform: translateX(4px); }
+
+  /* Coming soon card */
+  .case-card.coming-soon {
+    opacity: 0.55; pointer-events: none;
+  }
+  .cs-badge {
+    display: inline-block; font-size: 0.58rem; letter-spacing: 0.14em;
+    text-transform: uppercase; padding: 5px 11px;
+    background: rgba(201,168,76,0.12); color: var(--gold);
+    margin-bottom: 20px;
+  }
+
+  /* ── ABOUT ── */
+  .about-section {
+    background: var(--forest-deep); padding: 120px 52px;
+    position: relative; overflow: hidden;
+  }
+  .about-section::before {
+    content: '';
+    position: absolute; top: -100px; right: -80px;
+    width: 500px; height: 500px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,168,76,0.05) 0%, transparent 70%);
+  }
+  .about-inner {
+    max-width: 1160px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 100px; align-items: start;
+  }
+
+  .about-left .label { color: var(--gold-light); }
+  .about-left .label::before { background: var(--gold-light); }
+
+  .about-left h2 {
+    color: var(--cream); font-size: clamp(2.2rem, 3.5vw, 3.4rem);
+  }
+  .about-left h2 em { color: var(--gold-light); }
+
+  .about-text {
+    font-size: 0.97rem; line-height: 1.85;
+    color: rgba(245,240,232,0.65); max-width: none;
+  }
+  .about-text + .about-text { margin-top: 18px; }
+
+  .about-right { padding-top: 48px; }
+
+  .skills-list {
+    display: flex; flex-direction: column; gap: 2px;
+    background: rgba(201,168,76,0.12);
+  }
+  .skill-row {
+    display: grid; grid-template-columns: 1fr 2fr;
+    background: rgba(255,255,255,0.03);
+    transition: background 0.2s;
+  }
+  .skill-row:hover { background: rgba(255,255,255,0.06); }
+  .skill-category {
+    padding: 18px 24px;
+    border-right: 1px solid rgba(201,168,76,0.1);
+    font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--gold); opacity: 0.7;
+    display: flex; align-items: center;
+  }
+  .skill-items {
+    padding: 18px 24px;
+    font-size: 0.84rem; color: rgba(245,240,232,0.55); line-height: 1.6;
+  }
+
+  .about-signature {
+    margin-top: 40px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem; font-style: italic; font-weight: 300;
+    color: rgba(201,168,76,0.4);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── CONTACT ── */
+  .contact-section { padding: 120px 52px; background: var(--cream-warm); }
+  .contact-inner {
+    max-width: 1160px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 100px; align-items: start;
+  }
+
+  .contact-left h2 { color: var(--forest-deep); }
+  .contact-left h2 em { color: var(--forest-mid); }
+  .contact-left p {
+    font-size: 0.97rem; line-height: 1.85; color: #555; max-width: none; margin-top: 20px;
+  }
+
+  .contact-details { margin-top: 40px; display: flex; flex-direction: column; gap: 14px; }
+  .contact-detail {
+    display: flex; align-items: center; gap: 16px;
+    font-size: 0.88rem; color: var(--muted); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .contact-detail:hover { color: var(--forest); }
+  .cd-icon {
+    width: 36px; height: 36px;
+    background: var(--forest); color: var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; flex-shrink: 0;
+  }
+
+  /* Contact form */
+  .contact-form { display: flex; flex-direction: column; gap: 2px; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+
+  .field { display: flex; flex-direction: column; }
+  .field label {
+    font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--gold); padding: 14px 20px 0;
+    background: var(--cream);
+  }
+  .field input,
+  .field textarea,
+  .field select {
+    border: none; outline: none;
+    background: var(--cream); padding: 10px 20px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.92rem; color: var(--charcoal);
+    resize: none; appearance: none;
+    transition: background 0.2s;
+    border-bottom: 2px solid transparent;
+  }
+  .field input:focus,
+  .field textarea:focus {
+    background: white;
+    border-bottom-color: var(--gold);
+  }
+  .field textarea { min-height: 120px; }
+
+  .field.full { grid-column: 1 / -1; }
+
+  .form-submit {
+    padding: 18px 36px;
+    background: var(--forest);
+    color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase;
+    border: none; cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+    align-self: flex-start; margin-top: 2px;
+  }
+  .form-submit:hover { background: var(--forest-mid); transform: translateY(-2px); }
+
+  .form-note {
+    font-size: 0.75rem; color: var(--muted); margin-top: 12px;
+    font-style: italic;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--forest-deep);
+    padding: 52px 52px;
+    display: grid; grid-template-columns: 1fr auto 1fr;
+    align-items: center; gap: 24px;
+    border-top: 1px solid rgba(201,168,76,0.08);
+  }
+  .footer-left {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem; color: rgba(245,240,232,0.35);
+    letter-spacing: 0.08em; font-weight: 300;
+  }
+  .footer-left em { font-style: italic; color: rgba(201,168,76,0.4); }
+  .footer-center {
+    font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: rgba(245,240,232,0.2); text-align: center;
+  }
+  .footer-links {
+    display: flex; justify-content: flex-end; gap: 24px;
+  }
+  .footer-links a {
+    font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: rgba(245,240,232,0.25); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--gold-light); }
+
+  /* ── REVEAL ── */
+  .r { opacity: 0; transform: translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease; }
+  .r.v { opacity: 1; transform: translateY(0); }
+  .r.d1 { transition-delay: 0.1s; } .r.d2 { transition-delay: 0.2s; }
+  .r.d3 { transition-delay: 0.3s; } .r.d4 { transition-delay: 0.4s; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 960px) {
+    body { cursor: auto; }
+    .cursor, .cursor-ring { display: none; }
+    nav { padding: 16px 24px; }
+    nav.scrolled { padding: 12px 24px; }
+    .nav-links { display: none; }
+    .hero { padding: 100px 24px 60px; }
+    .hero-stats { gap: 28px; }
+    .work-section { padding: 80px 24px; }
+    .section-header { flex-direction: column; align-items: flex-start; gap: 12px; margin-bottom: 40px; }
+    .case-card { grid-template-columns: 1fr; }
+    .case-visual { min-height: 180px; }
+    .case-content { padding: 36px 28px; }
+    .about-section { padding: 80px 24px; }
+    .about-inner { grid-template-columns: 1fr; gap: 52px; }
+    .about-right { padding-top: 0; }
+    .contact-section { padding: 80px 24px; }
+    .contact-inner { grid-template-columns: 1fr; gap: 52px; }
+    .form-row { grid-template-columns: 1fr; }
+    footer { grid-template-columns: 1fr; gap: 16px; padding: 40px 24px; }
+    .footer-links { justify-content: flex-start; }
+    .footer-center { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+<div id="prog"></div>
+
+<nav id="nav">
+  <a class="nav-logo" href="#"><em>Sophia</em> Robins</a>
+  <ul class="nav-links">
+    <li><a href="#work">Work</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a class="nav-cta" href="#contact">Hire me</a></li>
+  </ul>
+</nav>
+
+<!-- ══════════ HERO ══════════ -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-lines"></div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">UX/UI Designer & Developer · Graduating Fall 2026 · Open to work</div>
+
+    <h1 class="hero-name">
+      <span class="first">Sophia</span>
+      <span class="last">Robins.</span>
+    </h1>
+
+    <div class="hero-title-row">
+      <span class="hero-title-text">UX/UI Designer & Developer</span>
+      <div class="hero-title-line"></div>
+    </div>
+
+    <p class="hero-bio">
+      I design and build — from first sketch to shipped product.
+      My work lives at the intersection of <strong>considered design</strong> and
+      <strong>clean code</strong>, where the experience a user feels is just as
+      deliberate as the system underneath it.
+    </p>
+
+    <div class="hero-actions">
+      <a class="btn-primary" href="#work">View my work</a>
+      <a class="btn-ghost" href="#about">About me</a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <label>Based in</label>
+        <span>Pacific Northwest</span>
+      </div>
+      <div class="hero-stat">
+        <label>Education</label>
+        <span>WGU — BS UX/UI Design, graduating Fall 2026</span>
+      </div>
+      <div class="hero-stat">
+        <label>Currently</label>
+        <span>Open to full-time & freelance</span>
+      </div>
+      <div class="hero-stat">
+        <label>Stack</label>
+        <span>Figma · Next.js · TypeScript · Supabase</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ WORK ══════════ -->
+<section class="work-section" id="work">
+  <div class="section-header r">
+    <div>
+      <div class="label">Selected Work</div>
+      <h2>Projects that<br><em>ship.</em></h2>
+    </div>
+    <a class="view-all" href="#">All case studies</a>
+  </div>
+
+  <div class="cases">
+
+    <!-- Card 1: Client Portal -->
+    <a class="case-card r d1" href="chasing-robins-case-study.html">
+      <div class="case-visual">
+        <div class="case-visual-bg cv-portal"></div>
+        <div class="case-visual-pattern"></div>
+        <div class="case-visual-content">
+          <span class="case-icon">✦</span>
+          <div class="case-visual-label">Full-stack product</div>
+        </div>
+      </div>
+      <div class="case-content">
+        <div class="case-tags">
+          <span class="case-tag">UX/UI Design</span>
+          <span class="case-tag">Full-Stack Dev</span>
+          <span class="case-tag">Product</span>
+          <span class="case-tag">Brand Identity</span>
+        </div>
+        <h3>Chasing Robins Media<br><em>Client Portal</em></h3>
+        <p>A full-stack web application I designed and built for my wedding photography business — giving every couple their own private space to manage contracts, payments, questionnaires, messaging, and gallery delivery.</p>
+        <div class="case-meta">
+          <div class="cm-item"><label>Stack</label><span>Next.js · Supabase · Stripe</span></div>
+          <div class="cm-item"><label>Type</label><span>0→1 Product</span></div>
+          <div class="cm-item"><label>Role</label><span>Solo Designer + Developer</span></div>
+        </div>
+        <span class="case-cta">Read case study</span>
+      </div>
+    </a>
+
+    <!-- Card 2: Website -->
+    <a class="case-card r d2" href="chasing-robins-website-portfolio.html">
+      <div class="case-visual">
+        <div class="case-visual-bg cv-website"></div>
+        <div class="case-visual-pattern"></div>
+        <div class="case-visual-content">
+          <span class="case-icon">◈</span>
+          <div class="case-visual-label">Marketing website</div>
+        </div>
+      </div>
+      <div class="case-content">
+        <div class="case-tags">
+          <span class="case-tag">Web Design</span>
+          <span class="case-tag">SEO Strategy</span>
+          <span class="case-tag">Conversion</span>
+          <span class="case-tag">WordPress</span>
+        </div>
+        <h3>Chasing Robins Media<br><em>Wedding Photography Website</em></h3>
+        <p>A fully custom-coded WordPress site built to attract and convert premium wedding clients — with a deliberate brand identity, SEO architecture, and a conversion-optimised inquiry flow designed around the ideal client's journey.</p>
+        <div class="case-meta">
+          <div class="cm-item"><label>Platform</label><span>WordPress + Custom HTML/CSS</span></div>
+          <div class="cm-item"><label>Goal</label><span>Premium client acquisition</span></div>
+          <div class="cm-item"><label>Live at</label><span>chasingrobinsmedia.com</span></div>
+        </div>
+        <span class="case-cta">Read case study</span>
+      </div>
+    </a>
+
+    <!-- Card 3: HoneyBook Audit -->
+    <a class="case-card r d3" href="honeybook-ux-audit.html">
+      <div class="case-visual">
+        <div class="case-visual-bg cv-audit"></div>
+        <div class="case-visual-pattern"></div>
+        <div class="case-visual-content">
+          <span class="case-icon">⊘</span>
+          <div class="case-visual-label">UX Audit + Redesign</div>
+        </div>
+      </div>
+      <div class="case-content">
+        <div class="case-tags">
+          <span class="case-tag">UX Audit</span>
+          <span class="case-tag">Competitive Analysis</span>
+          <span class="case-tag">Figma Redesign</span>
+        </div>
+        <h3>HoneyBook<br><em>UX Audit & Redesign</em></h3>
+        <p>I used HoneyBook as a working photographer, found it lacking, and built something better. This case study documents the nine UX failures that led me to design the Chasing Robins Client Portal — with a direct before/after comparison and a Figma redesign of the three most broken flows.</p>
+        <div class="case-meta">
+          <div class="cm-item"><label>Method</label><span>Lived use + peer interviews</span></div>
+          <div class="cm-item"><label>Output</label><span>Audit + Figma redesign</span></div>
+          <div class="cm-item"><label>Outcome</label><span>Built the alternative</span></div>
+        </div>
+        <span class="case-cta">Read case study</span>
+      </div>
+    </a>
+
+    <!-- Card 4: Coming soon -->
+    <div class="case-card coming-soon r d4">
+      <div class="case-visual">
+        <div class="case-visual-bg" style="background: linear-gradient(135deg, #1e1e1e 0%, #2a2a2a 100%);"></div>
+        <div class="case-visual-content">
+          <span class="case-icon" style="color:rgba(255,255,255,0.08);">○</span>
+          <div class="case-visual-label" style="color:rgba(255,255,255,0.2);">In progress</div>
+        </div>
+      </div>
+      <div class="case-content">
+        <span class="cs-badge">Coming soon</span>
+        <h3 style="color: var(--muted);">Next project<br><em style="color: #aaa;">in progress</em></h3>
+        <p style="color: #aaa;">A new case study is currently in development. Check back soon.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════ ABOUT ══════════ -->
+<section class="about-section" id="about">
+  <div class="about-inner">
+    <div class="about-left">
+      <div class="label light r">About</div>
+      <h2 class="r d1">Designer who<br><em>ships things.</em></h2>
+      <p class="about-text r d2">I'm Sophia Robins — a UX/UI designer and developer based in the Pacific Northwest, currently finishing my final semester at Western Governors University where I'm completing a Bachelor's degree in UX and UI Design, graduating Fall 2026.</p>
+      <p class="about-text r d3">I also run Chasing Robins Media, a wedding photography business I built from the ground up. Along the way I discovered that the tools available to photographers were either too generic, too expensive, or completely blind to the client's experience — so I designed and built my own. A full-stack web application, from brand identity to deployed product, while finishing school.</p>
+      <p class="about-text r d3">That's how I work. I don't just design interfaces — I understand the business problem behind them, the user feeling in front of them, and the code connecting them underneath. I'm actively looking for full-time UX/UI design roles to step into after graduation, and available for freelance work now.</p>
+      <div class="about-signature r d4">Sophia Robins</div>
+    </div>
+
+    <div class="about-right r d2">
+      <div class="skills-list">
+        <div class="skill-row">
+          <div class="skill-category">Design</div>
+          <div class="skill-items">UX Research · UI Design · Prototyping · Design Systems · Brand Identity · Figma</div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-category">Development</div>
+          <div class="skill-items">Next.js · TypeScript · Tailwind CSS · HTML/CSS · WordPress · Responsive Design</div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-category">Backend</div>
+          <div class="skill-items">Supabase · PostgreSQL · Row-Level Security · REST APIs · Vercel</div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-category">Payments</div>
+          <div class="skill-items">Stripe · Payment flows · Subscription logic · Invoice design</div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-category">Strategy</div>
+          <div class="skill-items">SEO Architecture · Conversion Optimisation · Content Strategy · User Research</div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-category">Methods</div>
+          <div class="skill-items">User Interviews · UX Audits · Competitive Analysis · Information Architecture</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ CONTACT ══════════ -->
+<section class="contact-section" id="contact">
+  <div class="contact-inner">
+    <div class="contact-left">
+      <div class="label r">Contact</div>
+      <h2 class="r d1">Let's build<br>something<br><em>worth using.</em></h2>
+      <p class="r d2">I'm finishing my final semester at WGU and actively looking for full-time UX/UI design roles starting Fall 2026. I'm also available for freelance and contract work right now. If you're building something that deserves both sharp design thinking and clean code, let's talk.</p>
+
+      <div class="contact-details r d3">
+        <a class="contact-detail" href="mailto:sophiamayrobins@gmail.com">
+          <div class="cd-icon">@</div>
+          sophiamayrobins@gmail.com
+        </a>
+        <a class="contact-detail" href="https://www.chasingrobinsmedia.com" target="_blank">
+          <div class="cd-icon">↗</div>
+          chasingrobinsmedia.com
+        </a>
+        <a class="contact-detail" href="https://www.linkedin.com/in/sophia-robins1" target="_blank">
+          <div class="cd-icon">in</div>
+          linkedin.com/in/sophia-robins1
+        </a>
+        <a class="contact-detail" href="https://github.com/sophiarobins" target="_blank">
+          <div class="cd-icon">&lt;/&gt;</div>
+          github.com/sophiarobins
+        </a>
+      </div>
+    </div>
+
+    <div class="r d2">
+      <form class="contact-form" onsubmit="handleSubmit(event)">
+        <div class="form-row">
+          <div class="field">
+            <label for="name">Name</label>
+            <input type="text" id="name" placeholder="Your name" required>
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="your@email.com" required>
+          </div>
+        </div>
+        <div class="field full">
+          <label for="subject">What's this about?</label>
+          <input type="text" id="subject" placeholder="Job opportunity, freelance project, collaboration...">
+        </div>
+        <div class="field full">
+          <label for="message">Message</label>
+          <textarea id="message" placeholder="Tell me about what you're building..." required></textarea>
+        </div>
+        <button type="submit" class="form-submit" id="submit-btn">Send message →</button>
+        <p class="form-note" id="form-note">I typically respond within 24 hours.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer>
+  <div class="footer-left">Sophia <em>Robins</em></div>
+  <div class="footer-center">© 2026 · UX/UI Designer & Developer</div>
+  <div class="footer-links">
+    <a href="#work">Work</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+    <a href="https://www.linkedin.com/in/sophia-robins1" target="_blank">LinkedIn</a>
+    <a href="https://github.com/sophiarobins" target="_blank">GitHub</a>
+  </div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring   = document.getElementById('cursor-ring');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  function animateCursor() {
+    cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+    rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+    requestAnimationFrame(animateCursor);
+  }
+  animateCursor();
+
+  // Nav scroll
+  window.addEventListener('scroll', () => {
+    const d = document.documentElement;
+    document.getElementById('prog').style.width =
+      (d.scrollTop / (d.scrollHeight - d.clientHeight) * 100) + '%';
+    document.getElementById('nav').classList.toggle('scrolled', d.scrollTop > 60);
+  });
+
+  // Reveal
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('v'); });
+  }, { threshold: 0.08, rootMargin: '0px 0px -28px 0px' });
+  document.querySelectorAll('.r').forEach(el => obs.observe(el));
+
+  // Form
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn  = document.getElementById('submit-btn');
+    const note = document.getElementById('form-note');
+    btn.textContent = 'Message sent ✓';
+    btn.style.background = '#2C4A3E';
+    btn.disabled = true;
+    note.textContent = "Thanks — I'll be in touch soon.";
+    note.style.color = '#2C4A3E';
+  }
+</script>
+</body>
+</html>

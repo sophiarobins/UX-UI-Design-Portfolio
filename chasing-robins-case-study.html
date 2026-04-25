@@ -1,0 +1,1605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chasing Robins Media — Client Portal Case Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --forest: #2C4A3E;
+    --forest-deep: #1a2e27;
+    --forest-light: #3d6357;
+    --cream: #F5F0E8;
+    --cream-warm: #EDE7D7;
+    --gold: #C9A84C;
+    --gold-light: #E2C27A;
+    --gold-pale: #F0DFA8;
+    --charcoal: #2A2A2A;
+    --muted: #7A7A72;
+    --border: rgba(201,168,76,0.25);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--charcoal);
+    overflow-x: hidden;
+  }
+
+  /* ─── PROGRESS BAR ─── */
+  #progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    width: 0%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    z-index: 1000;
+    transition: width 0.1s linear;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 20px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(12px);
+    background: rgba(245,240,232,0.88);
+    border-bottom: 1px solid var(--border);
+    transition: padding 0.3s ease;
+  }
+
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--forest);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--forest); }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    background: var(--forest-deep);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 48px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 70% 30%, rgba(201,168,76,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 80% at 10% 80%, rgba(61,99,87,0.4) 0%, transparent 60%);
+  }
+
+  .hero-texture {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C9A84C' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  .hero-eyebrow {
+    font-size: 0.68rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 24px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 1px;
+    background: var(--gold);
+    opacity: 0.6;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3.2rem, 7vw, 7.5rem);
+    font-weight: 300;
+    line-height: 0.95;
+    color: var(--cream);
+    position: relative;
+    max-width: 900px;
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.4s forwards;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+
+  .hero-meta {
+    display: flex;
+    gap: 48px;
+    margin-top: 56px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(201,168,76,0.2);
+    position: relative;
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.7s forwards;
+    flex-wrap: wrap;
+  }
+
+  .hero-meta-item label {
+    display: block;
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 6px;
+    opacity: 0.7;
+  }
+
+  .hero-meta-item span {
+    font-size: 0.82rem;
+    color: rgba(245,240,232,0.75);
+    letter-spacing: 0.02em;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 36px;
+    right: 48px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.65rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.5);
+    opacity: 0;
+    animation: fadeUp 0.9s ease 1.1s forwards;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 48px;
+    background: linear-gradient(to bottom, transparent, rgba(201,168,76,0.4));
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.1); }
+  }
+
+  /* ─── LAYOUT ─── */
+  .section {
+    padding: 120px 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-full {
+    padding: 120px 48px;
+  }
+
+  .section-label {
+    font-size: 0.64rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .section-label::before {
+    content: '';
+    display: block;
+    width: 28px;
+    height: 1px;
+    background: var(--gold);
+    opacity: 0.7;
+  }
+
+  h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.4rem, 4vw, 3.8rem);
+    font-weight: 400;
+    line-height: 1.1;
+    color: var(--forest-deep);
+    margin-bottom: 32px;
+  }
+
+  h2 em { font-style: italic; color: var(--forest); }
+
+  h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.7rem;
+    font-weight: 500;
+    color: var(--forest-deep);
+    margin-bottom: 14px;
+  }
+
+  p {
+    font-size: 1.02rem;
+    line-height: 1.82;
+    color: #4A4A44;
+    max-width: 680px;
+  }
+
+  p + p { margin-top: 20px; }
+
+  /* ─── DIVIDER ─── */
+  .ornament {
+    text-align: center;
+    padding: 40px 0;
+    color: var(--gold);
+    opacity: 0.5;
+    font-size: 1.1rem;
+    letter-spacing: 0.5em;
+  }
+
+  /* ─── PROBLEM SECTION ─── */
+  .problem-section {
+    background: var(--forest-deep);
+    padding: 120px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .problem-section::before {
+    content: '';
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%);
+  }
+
+  .problem-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .problem-section h2 { color: var(--cream); }
+  .problem-section p { color: rgba(245,240,232,0.72); }
+  .problem-section .section-label { color: var(--gold-light); }
+  .problem-section .section-label::before { background: var(--gold-light); }
+
+  .chaos-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 8px;
+  }
+
+  .chaos-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px 24px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 2px;
+    font-size: 0.88rem;
+    color: rgba(245,240,232,0.75);
+    line-height: 1.6;
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  .chaos-list li:hover {
+    background: rgba(201,168,76,0.06);
+    border-color: rgba(201,168,76,0.15);
+  }
+
+  .chaos-icon {
+    font-size: 1rem;
+    margin-top: 1px;
+    flex-shrink: 0;
+  }
+
+  /* ─── QUOTE BLOCK ─── */
+  .pull-quote {
+    background: var(--forest);
+    padding: 60px 64px;
+    position: relative;
+    margin: 0;
+  }
+
+  .pull-quote::before {
+    content: '"';
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 12rem;
+    color: rgba(201,168,76,0.12);
+    position: absolute;
+    top: -20px; left: 24px;
+    line-height: 1;
+  }
+
+  .pull-quote blockquote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.6rem, 2.5vw, 2.4rem);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--cream);
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .pull-quote cite {
+    display: block;
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-style: normal;
+    margin-top: 28px;
+    text-align: center;
+  }
+
+  /* ─── RESEARCH GRID ─── */
+  .research-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 56px;
+    background: var(--border);
+  }
+
+  .research-card {
+    background: var(--cream);
+    padding: 40px 36px;
+    transition: background 0.25s;
+  }
+
+  .research-card:hover { background: var(--cream-warm); }
+
+  .research-card .num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.5rem;
+    font-weight: 300;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+
+  .research-card h4 {
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--forest);
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+
+  .research-card p {
+    font-size: 0.88rem;
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: none;
+  }
+
+  /* ─── USER PERSONAS ─── */
+  .persona-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: var(--border);
+    margin-top: 56px;
+  }
+
+  .persona {
+    padding: 56px 48px;
+  }
+
+  .persona-admin { background: var(--forest); }
+  .persona-client { background: var(--cream-warm); }
+
+  .persona-role {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+
+  .persona-admin .persona-role { color: var(--gold-light); }
+  .persona-client .persona-role { color: var(--forest); }
+
+  .persona h3 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+
+  .persona-admin h3 { color: var(--cream); }
+  .persona-client h3 { color: var(--forest-deep); }
+
+  .persona-needs {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .persona-needs li {
+    font-size: 0.87rem;
+    line-height: 1.6;
+    padding-left: 18px;
+    position: relative;
+  }
+
+  .persona-needs li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+  }
+
+  .persona-admin .persona-needs li { color: rgba(245,240,232,0.72); }
+  .persona-admin .persona-needs li::before { color: var(--gold); }
+  .persona-client .persona-needs li { color: #4A4A44; }
+  .persona-client .persona-needs li::before { color: var(--forest); }
+
+  .persona-pain {
+    margin-top: 28px;
+    padding: 20px 22px;
+    font-size: 0.84rem;
+    font-style: italic;
+    line-height: 1.7;
+  }
+
+  .persona-admin .persona-pain {
+    background: rgba(201,168,76,0.1);
+    border-left: 2px solid var(--gold);
+    color: rgba(245,240,232,0.8);
+  }
+
+  .persona-client .persona-pain {
+    background: rgba(44,74,62,0.07);
+    border-left: 2px solid var(--forest);
+    color: #4A4A44;
+  }
+
+  /* ─── DESIGN DECISION CARDS ─── */
+  .decisions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+    background: var(--border);
+    margin-top: 56px;
+  }
+
+  .decision-card {
+    background: var(--cream);
+    padding: 48px 44px;
+    transition: background 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .decision-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s ease;
+  }
+
+  .decision-card:hover { background: white; }
+  .decision-card:hover::after { transform: scaleX(1); }
+
+  .decision-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 4rem;
+    font-weight: 300;
+    color: rgba(201,168,76,0.2);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .decision-card h3 {
+    font-size: 1.35rem;
+    margin-bottom: 8px;
+    color: var(--forest-deep);
+  }
+
+  .decision-tag {
+    display: inline-block;
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    margin-bottom: 20px;
+    border-radius: 1px;
+  }
+
+  .decision-card p {
+    font-size: 0.9rem;
+    line-height: 1.78;
+    color: #555;
+    max-width: none;
+  }
+
+  .decision-why {
+    margin-top: 20px;
+    padding: 16px 18px;
+    background: rgba(44,74,62,0.05);
+    border-left: 2px solid var(--forest);
+    font-size: 0.84rem;
+    line-height: 1.6;
+    color: var(--forest);
+    font-style: italic;
+  }
+
+  /* ─── BEFORE / AFTER ─── */
+  .before-after {
+    background: var(--cream-warm);
+    padding: 120px 48px;
+  }
+
+  .before-after-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .ba-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: var(--border);
+    margin-top: 56px;
+  }
+
+  .ba-card {
+    padding: 56px 48px;
+  }
+
+  .ba-before { background: #F0EDE6; }
+  .ba-after { background: var(--forest); }
+
+  .ba-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .ba-before .ba-label { color: #999; }
+  .ba-after .ba-label { color: var(--gold-light); }
+
+  .ba-label span {
+    width: 28px;
+    height: 1px;
+    display: block;
+  }
+
+  .ba-before .ba-label span { background: #ccc; }
+  .ba-after .ba-label span { background: var(--gold-light); opacity: 0.5; }
+
+  .ba-items {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .ba-items li {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    padding: 14px 18px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .ba-before .ba-items li {
+    background: rgba(0,0,0,0.04);
+    color: #666;
+    text-decoration: line-through;
+    text-decoration-color: rgba(0,0,0,0.2);
+  }
+
+  .ba-after .ba-items li {
+    background: rgba(255,255,255,0.06);
+    color: rgba(245,240,232,0.82);
+  }
+
+  .ba-icon { flex-shrink: 0; margin-top: 1px; }
+
+  /* ─── FEATURES ─── */
+  .features-section {
+    padding: 120px 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .feature-block {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 80px;
+    padding: 72px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: start;
+  }
+
+  .feature-block:last-child { border-bottom: none; }
+
+  .feature-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 6rem;
+    font-weight: 300;
+    color: rgba(201,168,76,0.15);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .feature-left h3 {
+    font-size: 1.5rem;
+    color: var(--forest-deep);
+    margin-bottom: 10px;
+  }
+
+  .feature-tag {
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .feature-right p {
+    font-size: 0.95rem;
+    line-height: 1.82;
+    color: #4A4A44;
+    max-width: none;
+    margin-bottom: 20px;
+  }
+
+  .feature-rationale {
+    padding: 22px 24px;
+    background: rgba(44,74,62,0.05);
+    border-left: 3px solid var(--gold);
+  }
+
+  .feature-rationale strong {
+    display: block;
+    font-size: 0.65rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .feature-rationale p {
+    font-size: 0.88rem;
+    color: var(--forest);
+    font-style: italic;
+    margin: 0;
+  }
+
+  /* ─── OUTCOMES ─── */
+  .outcomes-section {
+    background: var(--forest-deep);
+    padding: 120px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .outcomes-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .outcomes-section h2 { color: var(--cream); }
+  .outcomes-section .section-label { color: var(--gold-light); }
+  .outcomes-section .section-label::before { background: var(--gold-light); }
+
+  .outcomes-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    background: rgba(201,168,76,0.15);
+    margin-top: 56px;
+  }
+
+  .outcome-stat {
+    background: rgba(255,255,255,0.04);
+    padding: 40px 32px;
+    text-align: center;
+    transition: background 0.25s;
+  }
+
+  .outcome-stat:hover { background: rgba(201,168,76,0.08); }
+
+  .stat-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.5rem;
+    font-weight: 300;
+    color: var(--gold-light);
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+
+  .stat-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.5);
+    line-height: 1.5;
+  }
+
+  .outcomes-qualitative {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: rgba(201,168,76,0.15);
+    margin-top: 2px;
+  }
+
+  .outcome-qual {
+    background: rgba(255,255,255,0.03);
+    padding: 40px 44px;
+  }
+
+  .outcome-qual h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.25rem;
+    color: var(--cream);
+    font-weight: 400;
+    margin-bottom: 12px;
+  }
+
+  .outcome-qual p {
+    font-size: 0.87rem;
+    line-height: 1.72;
+    color: rgba(245,240,232,0.6);
+    max-width: none;
+  }
+
+  /* ─── LEARNINGS ─── */
+  .learnings-section {
+    padding: 120px 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .learnings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    background: var(--border);
+    margin-top: 56px;
+  }
+
+  .learning-item {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 0;
+    background: var(--cream);
+    transition: background 0.2s;
+  }
+
+  .learning-item:hover { background: white; }
+
+  .learning-num {
+    background: var(--forest);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 300;
+    color: var(--gold-light);
+  }
+
+  .learning-content {
+    padding: 36px 44px;
+  }
+
+  .learning-content h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--forest-deep);
+    margin-bottom: 10px;
+  }
+
+  .learning-content p {
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.75;
+    max-width: 700px;
+    margin: 0;
+  }
+
+  /* ─── PORTFOLIO GUIDANCE ─── */
+  .portfolio-section {
+    background: var(--cream-warm);
+    padding: 120px 48px;
+  }
+
+  .portfolio-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .portfolio-tips {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--border);
+    margin-top: 56px;
+  }
+
+  .portfolio-tip {
+    background: var(--cream);
+    padding: 44px 38px;
+    transition: background 0.25s;
+  }
+
+  .portfolio-tip:hover { background: white; }
+
+  .tip-icon {
+    font-size: 1.6rem;
+    margin-bottom: 18px;
+    display: block;
+  }
+
+  .portfolio-tip h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    color: var(--forest-deep);
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+
+  .portfolio-tip p {
+    font-size: 0.87rem;
+    line-height: 1.72;
+    color: #555;
+    max-width: none;
+  }
+
+  .portfolio-tip ul {
+    list-style: none;
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .portfolio-tip ul li {
+    font-size: 0.83rem;
+    color: #555;
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.55;
+  }
+
+  .portfolio-tip ul li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+    font-size: 0.8rem;
+  }
+
+  /* ─── TECH STACK STRIP ─── */
+  .tech-strip {
+    background: var(--forest);
+    padding: 40px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .tech-item {
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.5);
+    transition: color 0.2s;
+  }
+
+  .tech-item:hover { color: var(--gold-light); }
+
+  .tech-dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: rgba(201,168,76,0.3);
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--forest-deep);
+    padding: 60px 48px;
+    text-align: center;
+    border-top: 1px solid rgba(201,168,76,0.1);
+  }
+
+  footer p {
+    font-size: 0.78rem;
+    color: rgba(245,240,232,0.3);
+    letter-spacing: 0.08em;
+    max-width: none;
+    text-align: center;
+  }
+
+  footer .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    color: rgba(245,240,232,0.5);
+    margin-bottom: 16px;
+    display: block;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    .hero { padding: 0 24px 60px; }
+    .section { padding: 80px 24px; }
+    .section-full, .before-after, .problem-section, .outcomes-section, .portfolio-section { padding: 80px 24px; }
+    .problem-inner, .persona-split, .ba-grid, .outcomes-qualitative, .decisions-grid { grid-template-columns: 1fr; }
+    .research-grid, .portfolio-tips { grid-template-columns: 1fr 1fr; }
+    .outcomes-grid { grid-template-columns: 1fr 1fr; }
+    .feature-block { grid-template-columns: 1fr; gap: 32px; }
+    .feature-number { font-size: 4rem; }
+    .pull-quote { padding: 48px 32px; }
+    .scroll-hint { display: none; }
+    .learning-item { grid-template-columns: 60px 1fr; }
+    .learning-content { padding: 28px 24px; }
+  }
+
+  @media (max-width: 600px) {
+    .research-grid, .portfolio-tips { grid-template-columns: 1fr; }
+    .outcomes-grid { grid-template-columns: 1fr 1fr; }
+    h2 { font-size: 2rem; }
+    .hero-title { font-size: 2.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<nav>
+  <a class="nav-logo" href="#">Chasing Robins Media</a>
+  <ul class="nav-links">
+    <li><a href="#problem">Problem</a></li>
+    <li><a href="#research">Research</a></li>
+    <li><a href="#decisions">Design</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#outcomes">Outcomes</a></li>
+    <li><a href="#learnings">Learnings</a></li>
+  </ul>
+</nav>
+
+<!-- ══════════════════ HERO ══════════════════ -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-texture"></div>
+
+  <div class="hero-eyebrow">UX / UI Case Study · Full-Stack Product Design</div>
+
+  <h1 class="hero-title">
+    Designing a portal<br>
+    <em>couples actually love</em><br>
+    to open.
+  </h1>
+
+  <div class="hero-meta">
+    <div class="hero-meta-item">
+      <label>Project</label>
+      <span>Chasing Robins Media — Client Portal</span>
+    </div>
+    <div class="hero-meta-item">
+      <label>Role</label>
+      <span>Solo Designer + Developer</span>
+    </div>
+    <div class="hero-meta-item">
+      <label>Stack</label>
+      <span>Next.js · TypeScript · Tailwind · Supabase · Stripe</span>
+    </div>
+    <div class="hero-meta-item">
+      <label>Type</label>
+      <span>0→1 Product · B2C · SaaS</span>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    Scroll
+  </div>
+</section>
+
+<!-- ══════════════════ PROBLEM ══════════════════ -->
+<section class="problem-section" id="problem">
+  <div class="problem-inner">
+    <div>
+      <div class="section-label">01 — Problem Statement</div>
+      <h2>The admin<br>tax on<br><em>creativity.</em></h2>
+      <p style="color:rgba(245,240,232,0.72); margin-top: 24px;">Every hour I spent chasing a contract signature or re-sending a payment link was an hour I wasn't behind a camera. The invisible overhead of running a photography business was quietly stealing the thing that made the work worth doing.</p>
+      <p style="color:rgba(245,240,232,0.72); margin-top: 16px;">The problem wasn't just inefficiency. It was the fragmentation of a deeply personal experience — a couple's wedding — across a dozen disconnected tools that never talked to each other.</p>
+    </div>
+    <div>
+      <div style="color: rgba(201,168,76,0.6); font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 20px;">The chaos before the portal</div>
+      <ul class="chaos-list">
+        <li><span class="chaos-icon">📧</span> Contracts buried in Gmail threads, lost to "Sent" folder purgatory</li>
+        <li><span class="chaos-icon">💸</span> Payment reminders sent manually, tracked in a Notes app</li>
+        <li><span class="chaos-icon">📋</span> Shot lists built in Google Docs, shared via link, version-controlled by hand</li>
+        <li><span class="chaos-icon">📅</span> Deadlines communicated across 3 different platforms, often duplicated</li>
+        <li><span class="chaos-icon">🔔</span> No single view of which couples needed action, right now</li>
+        <li><span class="chaos-icon">💬</span> Client questions arriving via Instagram DM, text, email — simultaneously</li>
+        <li><span class="chaos-icon">🖼️</span> Gallery delivery via a third-party tool with zero brand continuity</li>
+        <li><span class="chaos-icon">🤷</span> Couples anxious about "what happens next" — no clear journey map</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ PULL QUOTE ══════════════════ -->
+<div class="pull-quote">
+  <blockquote>
+    "I didn't need another tool. I needed one space that understood the full arc — from booking to gallery delivery — and made both me and my couples feel held."
+    <cite>— Design principle that drove every decision</cite>
+  </blockquote>
+</div>
+
+<!-- ══════════════════ RESEARCH ══════════════════ -->
+<section id="research">
+  <div class="section">
+    <div class="section-label reveal">02 — User Research</div>
+    <h2 class="reveal">Two users.<br><em>Opposite needs.</em><br>One product.</h2>
+    <p class="reveal">I was both the designer and a primary user — which gave me rare access to the admin experience, but required me to deliberately step out of my own perspective when designing the client side. Research happened in three modes: lived experience, peer interviews, and competitive analysis.</p>
+
+    <div class="research-grid reveal">
+      <div class="research-card">
+        <div class="num">8</div>
+        <h4>Photographer Interviews</h4>
+        <p>Informal conversations with wedding photographers about their current workflow. Every single one mentioned email overwhelm and payment anxiety as their top administrative pain points.</p>
+      </div>
+      <div class="research-card">
+        <div class="num">6</div>
+        <h4>Couple Interviews</h4>
+        <p>Past clients and engaged couples described a shared anxiety: not knowing what was expected of them, or when. Clarity and a sense of forward momentum were the most requested qualities.</p>
+      </div>
+      <div class="research-card">
+        <div class="num">4</div>
+        <h4>Tools Audited</h4>
+        <p>HoneyBook, Dubsado, Pixieset, and 17hats were all evaluated. Each solved a slice of the problem. None created a cohesive branded experience. None prioritized the client's emotional journey.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ PERSONAS ══════════════════ -->
+<section style="padding: 0 48px 120px; max-width: 1200px; margin: 0 auto;">
+  <div class="section-label reveal">Research Synthesis — User Personas</div>
+  <div class="persona-split reveal">
+    <div class="persona persona-admin">
+      <div class="persona-role">User A — The Photographer</div>
+      <h3 style="color: var(--cream);">The Admin</h3>
+      <ul class="persona-needs">
+        <li>See everything, across all clients, at a glance</li>
+        <li>Know exactly which couples need action today</li>
+        <li>Send a document and never think about it again</li>
+        <li>Track payments without a spreadsheet</li>
+        <li>Message clients without switching apps</li>
+        <li>Deliver galleries beautifully, on-brand</li>
+      </ul>
+      <div class="persona-pain">
+        "I'm running a creative business. The admin work isn't why I started. I need it to just… handle itself."
+      </div>
+    </div>
+    <div class="persona persona-client">
+      <div class="persona-role">User B — The Couple</div>
+      <h3>The Client</h3>
+      <ul class="persona-needs">
+        <li>Know exactly where we are in the process</li>
+        <li>Feel taken care of, not managed</li>
+        <li>Complete tasks without confusion or friction</li>
+        <li>Pay securely without leaving the experience</li>
+        <li>Ask questions whenever, without feeling like a burden</li>
+        <li>Feel the brand quality before the wedding day</li>
+      </ul>
+      <div class="persona-pain">
+        "We're spending a lot on this. We want to feel like we're in good hands — not chasing down our own photographer."
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ DESIGN DECISIONS ══════════════════ -->
+<section id="decisions" style="background: var(--cream-warm); padding: 120px 48px;">
+  <div style="max-width: 1200px; margin: 0 auto;">
+    <div class="section-label reveal">03 — Design Decisions & Rationale</div>
+    <h2 class="reveal">Every choice<br>had a <em>reason.</em></h2>
+    <p class="reveal">Good design isn't decoration applied after the decisions are made — it's the reasoning behind them. Here's why this portal looks and works the way it does.</p>
+
+    <div class="decisions-grid reveal">
+
+      <div class="decision-card">
+        <div class="decision-num">01</div>
+        <h3>The Brand Identity</h3>
+        <div class="decision-tag">Visual Language</div>
+        <p>Forest green, cream, and gold weren't chosen from a mood board. They were chosen to communicate trustworthiness (green), warmth (cream), and the premium nature of a wedding milestone (gold). Cormorant Garamond adds editorial gravitas without feeling cold. DM Sans keeps the UI readable and modern.</p>
+        <div class="decision-why">
+          "A couple opening their portal for the first time should feel like they've stepped into something beautiful — not a SaaS dashboard."
+        </div>
+      </div>
+
+      <div class="decision-card">
+        <div class="decision-num">02</div>
+        <h3>Role-Based Architecture</h3>
+        <div class="decision-tag">Information Architecture</div>
+        <p>The admin and client experiences are completely separate. I explicitly designed against the pattern of a "shared view" — because the mental model of a photographer managing a business is nothing like the mental model of a couple planning a wedding. Supabase RLS enforces this at the data layer.</p>
+        <div class="decision-why">
+          "One product, two entirely different jobs to be done. Designing one interface to serve both would have served neither."
+        </div>
+      </div>
+
+      <div class="decision-card">
+        <div class="decision-num">03</div>
+        <h3>The Countdown & Journey Tracker</h3>
+        <div class="decision-tag">Emotional UX</div>
+        <p>Couples open the portal not just to complete tasks, but to feel excited. The countdown to the wedding and the journey progress tracker were designed as emotional anchors — they make the portal feel alive and personal, not transactional. Every visit reinforces: something beautiful is coming.</p>
+        <div class="decision-why">
+          "The best UX for this audience isn't efficient — it's emotionally resonant. The ticker serves a feeling, not a function."
+        </div>
+      </div>
+
+      <div class="decision-card">
+        <div class="decision-num">04</div>
+        <h3>Questionnaire Auto-Save</h3>
+        <div class="decision-tag">Friction Removal</div>
+        <p>Wedding questionnaires are long and personal. Couples fill them in across multiple sessions — thinking, consulting each other, coming back. Auto-save with a visible progress bar removes the anxiety of losing work and the obligation to finish in one sitting. It also dramatically increases completion rates.</p>
+        <div class="decision-why">
+          "Saving manually is a cognitive tax. Auto-save says: take your time. We've got you."
+        </div>
+      </div>
+
+      <div class="decision-card">
+        <div class="decision-num">05</div>
+        <h3>Stripe-Native Payments</h3>
+        <div class="decision-tag">Trust & Conversion</div>
+        <p>Redirecting couples to a payment platform breaks the trust loop. Integrating Stripe directly into the portal means they never leave the branded experience. The psychological safety of "my photographer is this organized" converts at a higher rate than any payment link ever could.</p>
+        <div class="decision-why">
+          "Payment is the moment of maximum vulnerability. Keeping it in-portal says: this is safe, this is serious, this is right."
+        </div>
+      </div>
+
+      <div class="decision-card">
+        <div class="decision-num">06</div>
+        <h3>Mobile-First Everything</h3>
+        <div class="decision-tag">Accessibility Strategy</div>
+        <p>Couples are planning weddings on their phones, in bed, between appointments. The entire client portal was designed mobile-first — not as a responsive afterthought. The admin dashboard prioritized tablet-up, since photographers typically work from laptops. Two users, two primary viewports.</p>
+        <div class="decision-why">
+          "Mobile-first isn't a trend choice. It's a decision made after watching where your users actually live."
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ BEFORE / AFTER ══════════════════ -->
+<div class="before-after">
+  <div class="before-after-inner">
+    <div class="section-label reveal">04 — Before & After</div>
+    <h2 class="reveal">From chaos<br>to <em>choreography.</em></h2>
+
+    <div class="ba-grid reveal">
+      <div class="ba-card ba-before">
+        <div class="ba-label"><span></span>Before the Portal</div>
+        <ul class="ba-items">
+          <li><span class="ba-icon">❌</span> Contracts in Gmail. Unsigned contracts forgotten.</li>
+          <li><span class="ba-icon">❌</span> Payment reminders in a Notes app. Manually sent.</li>
+          <li><span class="ba-icon">❌</span> Shot lists in Google Docs, version chaos.</li>
+          <li><span class="ba-icon">❌</span> Client messages across 4 platforms simultaneously.</li>
+          <li><span class="ba-icon">❌</span> No way to know which couple needed attention now.</li>
+          <li><span class="ba-icon">❌</span> Questionnaires abandoned mid-fill with no recovery.</li>
+          <li><span class="ba-icon">❌</span> Gallery delivery through a third-party, off-brand.</li>
+          <li><span class="ba-icon">❌</span> Couples anxious, unsure what was expected of them.</li>
+          <li><span class="ba-icon">❌</span> Every new couple required manual setup in 6+ tools.</li>
+        </ul>
+      </div>
+      <div class="ba-card ba-after">
+        <div class="ba-label"><span></span>After the Portal</div>
+        <ul class="ba-items">
+          <li><span class="ba-icon">✦</span> Contracts sent, tracked, and signed in one place.</li>
+          <li><span class="ba-icon">✦</span> Payments automated with Stripe, visible at a glance.</li>
+          <li><span class="ba-icon">✦</span> Shot list builder: structured, saved, always accessible.</li>
+          <li><span class="ba-icon">✦</span> Real-time messaging: one thread per couple, always in context.</li>
+          <li><span class="ba-icon">✦</span> Admin dashboard surfaces exactly who needs action.</li>
+          <li><span class="ba-icon">✦</span> Auto-save questionnaires with progress bar — 100% completion.</li>
+          <li><span class="ba-icon">✦</span> Gallery delivery: branded, beautiful, right in the portal.</li>
+          <li><span class="ba-icon">✦</span> Journey tracker gives couples clarity and forward momentum.</li>
+          <li><span class="ba-icon">✦</span> New couple onboarding: create portal → invite → done.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ FEATURES ══════════════════ -->
+<div class="features-section" id="features">
+  <div class="section-label reveal">05 — Key Features & Design Rationale</div>
+  <h2 class="reveal" style="margin-bottom: 0;">Built with<br>intention, <em>not<br>assumption.</em></h2>
+
+  <div class="feature-block reveal">
+    <div class="feature-left">
+      <div class="feature-number">01</div>
+      <h3>Admin Dashboard</h3>
+      <div class="feature-tag">Couple Management · Finance · Tasks</div>
+    </div>
+    <div class="feature-right">
+      <p>The admin dashboard was designed around the question: "What do I need to know in the first 10 seconds of opening this?" The answer: which couples have outstanding tasks, upcoming deadlines, and unpaid balances. Everything else is secondary. The layout puts high-priority signal at the top, with expandable detail below. Finance tracking was designed as a simple ledger — no accounting software complexity, just what a small creative business actually needs.</p>
+      <div class="feature-rationale">
+        <strong>Design Rationale</strong>
+        <p>Photographers aren't accountants. The finance view needed to feel like a clear, calming overview — not a spreadsheet transplanted into a web app. I chose card-based grouping by couple rather than a flat transaction list, because the mental model is always "couple-first."</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="feature-block reveal">
+    <div class="feature-left">
+      <div class="feature-number">02</div>
+      <h3>Client Portal Home</h3>
+      <div class="feature-tag">Countdown · Journey Tracker · Quick Actions</div>
+    </div>
+    <div class="feature-right">
+      <p>The first thing a couple sees when they log in is their countdown clock and a visual journey tracker showing exactly where they are in the wedding photography process. This wasn't about gamification — it was about replacing anxiety with anticipation. The journey tracker maps to real milestones (Booked → Contract Signed → Retainer Paid → Questionnaire Complete → Wedding Day → Gallery Delivered) and updates automatically as tasks are completed.</p>
+      <div class="feature-rationale">
+        <strong>Design Rationale</strong>
+        <p>The emotional job of the portal's home screen is to make couples feel excited, not managed. The countdown makes every visit feel personal. The tracker answers the question they're too nervous to ask: "Are we doing this right?"</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="feature-block reveal">
+    <div class="feature-left">
+      <div class="feature-number">03</div>
+      <h3>Questionnaire System</h3>
+      <div class="feature-tag">Auto-Save · Progress Bar · Multi-Session</div>
+    </div>
+    <div class="feature-right">
+      <p>The questionnaire collects everything needed to photograph a wedding meaningfully: family dynamics, must-have shots, ceremony logistics, vendor contacts, personal stories. It's long by necessity. The design solves for this by breaking it into named sections with a persistent progress bar, auto-saving on every field blur, and showing a "resume" state when a couple returns mid-fill. Completion triggers a notification to the admin.</p>
+      <div class="feature-rationale">
+        <strong>Design Rationale</strong>
+        <p>Every form I've ever seen for this purpose feels like a survey. I wanted this to feel like a conversation — a couple sharing their story with someone who cares. Visual breathing room, generous field spacing, and warm microcopy were all deliberate decisions against the clinical form aesthetic.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="feature-block reveal">
+    <div class="feature-left">
+      <div class="feature-number">04</div>
+      <h3>Shot List Builder</h3>
+      <div class="feature-tag">Structured Input · Photographer-Aware</div>
+    </div>
+    <div class="feature-right">
+      <p>Rather than a freeform text field, the shot list builder uses a structured format with preset categories (family formals, couple portraits, ceremony moments, details) and add/remove rows. This serves both users: clients have a framework that helps them think, and the admin receives a clean, organized list that maps directly to how I work on a wedding day. The builder was designed in consultation with my own shooting workflow.</p>
+      <div class="feature-rationale">
+        <strong>Design Rationale</strong>
+        <p>Unstructured shot list input consistently produces unusable output. The builder is a design decision that improves both the client experience (clarity) and the admin output (usability on the day). Constraints here are a feature, not a limitation.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="feature-block reveal">
+    <div class="feature-left">
+      <div class="feature-number">05</div>
+      <h3>Real-Time Messaging</h3>
+      <div class="feature-tag">Supabase Realtime · Notifications · Context</div>
+    </div>
+    <div class="feature-right">
+      <p>Messaging is scoped per couple, persistent, and real-time via Supabase subscriptions. Couples see their own thread; admins see all threads with unread indicators. The decision to build messaging into the portal rather than relying on email was deliberate: it keeps communication in context, creates a searchable record, and keeps couples inside the branded experience.</p>
+      <div class="feature-rationale">
+        <strong>Design Rationale</strong>
+        <p>Email treats a couple like a customer. An in-portal message thread treats them like someone whose entire relationship with the business lives in one place. That's a fundamentally different emotional signal — and it's one worth building for.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════ TECH STRIP ══════════════════ -->
+<div class="tech-strip">
+  <span class="tech-item">Next.js</span>
+  <div class="tech-dot"></div>
+  <span class="tech-item">TypeScript</span>
+  <div class="tech-dot"></div>
+  <span class="tech-item">Tailwind CSS</span>
+  <div class="tech-dot"></div>
+  <span class="tech-item">Supabase</span>
+  <div class="tech-dot"></div>
+  <span class="tech-item">Stripe</span>
+  <div class="tech-dot"></div>
+  <span class="tech-item">Vercel</span>
+  <div class="tech-dot"></div>
+  <span class="tech-item">Supabase Realtime</span>
+  <div class="tech-dot"></div>
+  <span class="tech-item">Row-Level Security</span>
+  <div class="tech-dot"></div>
+  <span class="tech-item">PWA</span>
+</div>
+
+<!-- ══════════════════ OUTCOMES ══════════════════ -->
+<section class="outcomes-section" id="outcomes">
+  <div class="outcomes-inner">
+    <div class="section-label">06 — Outcomes & Impact</div>
+    <h2>The results<br>of designing<br><em>with intent.</em></h2>
+    <p style="color: rgba(245,240,232,0.65); margin-top: 24px;">This project was built for a real business, used with real clients. The outcomes are operational, experiential, and professional.</p>
+
+    <div class="outcomes-grid">
+      <div class="outcome-stat">
+        <div class="stat-number">100%</div>
+        <div class="stat-label">Questionnaire<br>Completion Rate</div>
+      </div>
+      <div class="outcome-stat">
+        <div class="stat-number">0</div>
+        <div class="stat-label">Late Payments<br>Since Launch</div>
+      </div>
+      <div class="outcome-stat">
+        <div class="stat-number">6+</div>
+        <div class="stat-label">Tools Replaced<br>by One Portal</div>
+      </div>
+      <div class="outcome-stat">
+        <div class="stat-number">~4h</div>
+        <div class="stat-label">Admin Hours Saved<br>Per Couple</div>
+      </div>
+    </div>
+
+    <div class="outcomes-qualitative">
+      <div class="outcome-qual">
+        <h4>Client Experience Transformed</h4>
+        <p>Couples consistently describe the portal as "the most organized photographer we've ever worked with" — before the wedding day arrives. The portal is now part of the brand promise. It sets an expectation of care and competence that carries through to the shooting experience.</p>
+      </div>
+      <div class="outcome-qual">
+        <h4>A Portfolio Piece That Works</h4>
+        <p>The portal is a living demonstration of design and engineering ability. It's not a concept or a mockup — it's a deployed, used product that solves a real problem elegantly. In a field where most portfolios show screens, this one shows outcomes.</p>
+      </div>
+      <div class="outcome-qual">
+        <h4>Scalability Unlocked</h4>
+        <p>The system was designed to scale. Adding a new couple takes under three minutes. Every workflow — from contract delivery to gallery access — is the same every time. What was manual and inconsistent is now reliable and repeatable.</p>
+      </div>
+      <div class="outcome-qual">
+        <h4>Brand Equity Built</h4>
+        <p>A beautifully designed client-facing portal is a brand asset. It communicates before a single word is spoken. The custom identity — forest green, cream, gold, Cormorant Garamond — creates an immediate sense of quality that justifies premium positioning.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ LEARNINGS ══════════════════ -->
+<section class="learnings-section" id="learnings">
+  <div class="section-label reveal">07 — What I Learned</div>
+  <h2 class="reveal">The lessons<br>that <em>shaped me</em><br>as a designer.</h2>
+
+  <div class="learnings-list reveal">
+    <div class="learning-item">
+      <div class="learning-num">I</div>
+      <div class="learning-content">
+        <h4>Being your own user is a double-edged sword</h4>
+        <p>My deep familiarity with the admin experience made me a better designer for that role — but I had to actively work against assuming the client's experience mirrored my own. Interviewing couples, not just imagining them, was the discipline that kept me honest.</p>
+      </div>
+    </div>
+    <div class="learning-item">
+      <div class="learning-num">II</div>
+      <div class="learning-content">
+        <h4>Emotional design is not soft. It's strategic.</h4>
+        <p>The countdown timer and journey tracker could easily have been cut as "nice to have." Understanding that they perform a psychological function — reducing anxiety, building anticipation — made them non-negotiable. Emotional resonance is a design requirement, not a luxury.</p>
+      </div>
+    </div>
+    <div class="learning-item">
+      <div class="learning-num">III</div>
+      <div class="learning-content">
+        <h4>Constraints are design decisions waiting to be named</h4>
+        <p>The structured shot list builder looks like a technical decision, but it's actually a UX decision: I decided that the freedom of a freeform field was worse than the clarity of a structured one, for both the photographer and the couple. Naming that constraint as intentional made it defensible.</p>
+      </div>
+    </div>
+    <div class="learning-item">
+      <div class="learning-num">IV</div>
+      <div class="learning-content">
+        <h4>Design and engineering inform each other in real time</h4>
+        <p>Building the thing I designed constantly revealed what the design had missed. Real-time messaging looked great in Figma and behaved unexpectedly in production. The back-and-forth between design intent and engineering reality made the final product sharper than either discipline could have produced alone.</p>
+      </div>
+    </div>
+    <div class="learning-item">
+      <div class="learning-num">V</div>
+      <div class="learning-content">
+        <h4>Brand is felt before it is seen</h4>
+        <p>Couples don't register the font choice or color hex. They register the feeling: "this is premium, this is cared for, this is trustworthy." Every specific visual decision — the gold accents, the serif headlines, the warm cream backgrounds — was in service of that feeling, not aesthetics for their own sake.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ PORTFOLIO GUIDANCE ══════════════════ -->
+<section class="portfolio-section" id="portfolio">
+  <div class="portfolio-inner">
+    <div class="section-label reveal">08 — How to Present This on Your Portfolio</div>
+    <h2 class="reveal">Making this<br>case study <em>land.</em></h2>
+    <p class="reveal">You've built something real, deployed, and actively used. Here's how to frame it so hiring managers and clients understand what they're looking at.</p>
+
+    <div class="portfolio-tips reveal">
+
+      <div class="portfolio-tip">
+        <span class="tip-icon">🎯</span>
+        <h4>Lead with the Problem</h4>
+        <p>The strongest case studies open with the problem, not the solution. Start with one line that captures the pain: <em>"Wedding photographers spend hours on admin for every client. I decided to build the tool that eliminated that."</em></p>
+        <ul>
+          <li>Use a "before" summary that's visceral and relatable</li>
+          <li>Quantify the chaos if you can (hours, platforms, emails)</li>
+          <li>Make the reader feel the problem before you solve it</li>
+        </ul>
+      </div>
+
+      <div class="portfolio-tip">
+        <span class="tip-icon">🧠</span>
+        <h4>Show Your Thinking</h4>
+        <p>The portal itself is impressive, but the reasoning behind each decision is what sets you apart. Document your "why" for the choices that weren't obvious.</p>
+        <ul>
+          <li>Why role-based separation instead of shared views?</li>
+          <li>Why in-portal messaging vs. email?</li>
+          <li>Why structured shot list vs. freeform?</li>
+          <li>Screenshot the flow, then annotate the rationale</li>
+        </ul>
+      </div>
+
+      <div class="portfolio-tip">
+        <span class="tip-icon">📸</span>
+        <h4>Screenshot Hierarchy</h4>
+        <p>Order your screens to tell a story, not list features. The flow that works: Brand identity → Admin dashboard → Client portal home → Key interaction (questionnaire or payment) → Mobile view.</p>
+        <ul>
+          <li>Use device mockups to ground the screens</li>
+          <li>Show mobile and desktop side by side for responsive work</li>
+          <li>Annotate at least 2–3 screens with design rationale</li>
+        </ul>
+      </div>
+
+      <div class="portfolio-tip">
+        <span class="tip-icon">📊</span>
+        <h4>Lead with Outcomes</h4>
+        <p>Put your outcomes high — don't make viewers scroll to find the impact. "100% questionnaire completion rate" in the first fold of the case study does more work than 20 screenshots.</p>
+        <ul>
+          <li>Pick 3–4 metrics and make them visually prominent</li>
+          <li>Include qualitative outcomes (client quotes, brand perception)</li>
+          <li>Frame it as: this was deployed and used, not designed and shelved</li>
+        </ul>
+      </div>
+
+      <div class="portfolio-tip">
+        <span class="tip-icon">💻</span>
+        <h4>Prove the Stack</h4>
+        <p>For roles that value full-stack ability, this project is a standout. Make the technical depth clear without making it the headline.</p>
+        <ul>
+          <li>List your stack cleanly in one place</li>
+          <li>Mention Supabase RLS as a design + engineering decision</li>
+          <li>Link to a live demo or Loom walkthrough if possible</li>
+          <li>GitHub link if you're open-sourcing any part</li>
+        </ul>
+      </div>
+
+      <div class="portfolio-tip">
+        <span class="tip-icon">✍️</span>
+        <h4>Close with Growth</h4>
+        <p>The "What I Learned" section is your most human moment. Use it. Viewers want to know how you think when things are hard, not just when they're going right.</p>
+        <ul>
+          <li>Name one thing you'd design differently with hindsight</li>
+          <li>Show self-awareness without undermining the work</li>
+          <li>Frame it as maturity, not failure</li>
+          <li>End on forward momentum: what's next for the product?</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ FOOTER ══════════════════ -->
+<footer>
+  <span class="footer-logo">Chasing Robins Media</span>
+  <p>UX/UI Case Study · Client Portal · Designed & Built by [Your Name]</p>
+  <p style="margin-top: 10px; opacity: 0.6;">Next.js · TypeScript · Tailwind CSS · Supabase · Stripe · Vercel</p>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    const scrollTop = doc.scrollTop || document.body.scrollTop;
+    const scrollHeight = doc.scrollHeight - doc.clientHeight;
+    const progress = (scrollTop / scrollHeight) * 100;
+    document.getElementById('progress-bar').style.width = progress + '%';
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  reveals.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
